@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('template')->default('default'); // ví dụ: default, seo, landing,...
             $table->longText('body')->nullable(); // nội dung HTML chính (editor trong Filament)
             $table->json('extra')->nullable(); // các config khác cho template, dạng JSON
+            $table->string('hero_image_url')->nullable(); // URL ảnh hero đơn giản, không phụ thuộc Curator
             $table->boolean('is_home')->default(false); // đánh dấu trang home nếu muốn
             $table->boolean('is_published')->default(true);
             $table->timestamp('published_at')->nullable();

@@ -17,6 +17,7 @@ class Page extends Model
         'template',
         'body',
         'extra',
+        'hero_image_url',
         'is_home',
         'is_published',
         'published_at',
