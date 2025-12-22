@@ -8,6 +8,12 @@
     @hasSection('metaDescription')
         <meta name="description" content="@yield('metaDescription')">
     @endif
+
+    @hasSection('canonical')
+        <link rel="canonical" href="@yield('canonical')">
+    @else
+        <link rel="canonical" href="{{ url()->current() }}">
+    @endif
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>

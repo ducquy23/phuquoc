@@ -1,2 +1,12 @@
 User-agent: *
-Disallow:
+
+# Chặn các khu vực không cần index (tùy CMS, nếu không có các thư mục này cũng không sao)
+Disallow: /admin/
+Disallow: /search
+Disallow: /cgi-bin/
+
+# Cho phép crawl các phần còn lại
+Allow: /
+
+# Khai báo sitemap (nên trỏ tới sitemap chính của website)
+Sitemap: /sitemap.xml
