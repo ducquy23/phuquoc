@@ -6,6 +6,7 @@ use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\PageController;
 
 // Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -25,5 +26,8 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/phu-quoc-long-term-rentals', [SeoController::class, 'longTerm'])->name('seo.long-term-rentals');
 Route::get('/phu-quoc-monthly-rentals', [SeoController::class, 'monthly'])->name('seo.monthly-rentals');
 Route::get('/phu-quoc-apartments-for-rent', [SeoController::class, 'apartmentsForRent'])->name('seo.phu-quoc-apartments-for-rent');
+
+// Generic CMS pages (tạo page riêng trong admin rồi truy cập /pages/{slug})
+Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 
 
