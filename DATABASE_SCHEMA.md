@@ -2,7 +2,11 @@
 
 ## 📊 Tổng Quan
 
-Database schema cho website cho thuê căn hộ Phú Quốc, bao gồm quản lý apartments, blog posts, contacts, bookings, và các tính năng hỗ trợ.
+Database schema cho website cho thuê căn hộ Phú Quốc - **kinh doanh riêng lẻ**, tập trung vào:
+- ✅ **SEO tốt** - Ranking cao trên Google
+- ✅ **Liên hệ đơn giản** - Chỉ cần số điện thoại
+- ✅ **Content Marketing** - Blog posts về Phú Quốc
+- ✅ **Local SEO** - Tối ưu cho tìm kiếm địa phương
 
 ---
 
@@ -97,6 +101,11 @@ Database schema cho website cho thuê căn hộ Phú Quốc, bao gồm quản l�
 - is_published (boolean) - Đã publish
 - published_at (timestamp)
 - meta_title, meta_description, meta_keywords - SEO
+- focus_keyword (string) - Primary keyword cho SEO
+- og_image_url (string) - Open Graph image
+- schema_markup (text) - JSON-LD structured data (Article schema)
+- canonical_url (string) - Canonical URL
+- noindex, nofollow (boolean) - SEO flags
 - views (integer) - Lượt xem
 - likes (integer) - Lượt thích
 - timestamps, soft_deletes
@@ -110,19 +119,24 @@ Database schema cho website cho thuê căn hộ Phú Quốc, bao gồm quản l�
 
 ---
 
-### 3. **contacts** - Form Liên Hệ
+### 3. **contacts** - Form Liên Hệ (Đơn Giản Hóa)
 
-**Mục đích**: Lưu trữ các inquiry/contact form submissions
+**Mục đích**: Lưu trữ các inquiry/contact form submissions - **Phone-first approach**
 
 **Các trường chính**:
 ```sql
 - id (bigint, PK)
 - name (string) - Tên người liên hệ
-- email (string) - Email
-- phone (string) - Số điện thoại
+- phone (string, REQUIRED) - Số điện thoại chính ⭐
+- email (string, nullable) - Email (optional)
+- zalo (string, nullable) - Zalo ID (popular in Vietnam)
+- inquiry_type (string) - booking, question, general
 - subject (string) - Chủ đề
-- message (text) - Nội dung
+- message (text, nullable) - Nội dung (optional - phone is main method)
 - apartment_id (bigint, nullable, FK -> apartments.id) - Nếu liên quan đến căn hộ
+- preferred_check_in (date, nullable) - Ngày check-in mong muốn
+- preferred_check_out (date, nullable) - Ngày check-out mong muốn
+- preferred_guests (integer, nullable) - Số khách
 - status (string) - new, read, replied, archived
 - admin_notes (text) - Ghi chú nội bộ
 - responded_by (bigint, nullable, FK -> users.id)
@@ -133,47 +147,37 @@ Database schema cho website cho thuê căn hộ Phú Quốc, bao gồm quản l�
 ```
 
 **Indexes**:
-- status, email, apartment_id, created_at
+- status, phone, email, apartment_id, created_at
+
+**Note**: ⭐ Phone là trường bắt buộc - đây là phương thức liên hệ chính. Không cần booking system phức tạp.
 
 ---
 
-### 4. **bookings** - Đặt Phòng
+### 4. **bookings** - Đặt Phòng ⚠️ OPTIONAL
 
 **Mục đích**: Quản lý bookings/reservations
 
-**Các trường chính**:
+**⚠️ LƯU Ý**: Với mục đích **kinh doanh riêng lẻ**, chỉ cần số điện thoại để liên hệ, **KHÔNG CẦN** booking system phức tạp. 
+
+**Khuyến nghị**: 
+- ❌ **Bỏ bảng bookings** - Dùng contacts table với `preferred_check_in/check_out` là đủ
+- ✅ **Hoặc đơn giản hóa** - Chỉ giữ lại các trường cơ bản
+
+**Nếu giữ lại, các trường chính**:
 ```sql
 - id (bigint, PK)
-- booking_number (string, unique) - Mã booking: BK-2025-001
 - apartment_id (bigint, FK -> apartments.id)
-- user_id (bigint, nullable, FK -> users.id) - Nếu là user đã đăng ký
-- guest_name, guest_email, guest_phone - Thông tin khách (nếu không đăng ký)
+- guest_name, guest_phone, guest_email - Thông tin khách
 - check_in (date) - Ngày check-in
 - check_out (date) - Ngày check-out
-- nights (integer) - Số đêm
 - guests (integer) - Số khách
-- price_per_night (decimal) - Giá mỗi đêm
-- total_price (decimal) - Tổng tiền
-- deposit (decimal) - Tiền đặt cọc
-- balance (decimal) - Số tiền còn lại
-- currency (string) - USD, VND
-- status (string) - pending, confirmed, checked_in, checked_out, cancelled, refunded
-- payment_status (string) - pending, partial, paid, refunded
-- payment_method (string) - cash, bank_transfer, credit_card
-- payment_notes (text)
-- paid_at (timestamp)
-- special_requests (text) - Yêu cầu đặc biệt
-- admin_notes (text) - Ghi chú nội bộ
-- cancelled_at (timestamp)
-- cancelled_by (bigint, nullable, FK -> users.id)
-- cancellation_reason (text)
+- status (string) - pending, confirmed, cancelled
+- notes (text) - Ghi chú
 - timestamps, soft_deletes
 ```
 
 **Indexes**:
-- booking_number, apartment_id, user_id
-- status, payment_status
-- check_in, check_out, created_at
+- apartment_id, status, check_in, check_out
 
 ---
 
@@ -288,6 +292,8 @@ php artisan migrate --path=database/migrations/2025_01_15_100000_create_apartmen
 php artisan migrate --path=database/migrations/2025_01_15_100001_create_posts_table.php
 php artisan migrate --path=database/migrations/2025_01_15_100002_create_contacts_table.php
 php artisan migrate --path=database/migrations/2025_01_15_100003_create_bookings_table.php
+php artisan migrate --path=database/migrations/2025_01_15_100006_add_seo_fields_to_pages_table.php
+# Note: 100007_simplify_bookings_or_remove.php - Xem xét có cần bookings không
 php artisan migrate --path=database/migrations/2025_01_15_100004_create_favorites_table.php
 php artisan migrate --path=database/migrations/2025_01_15_100005_create_reviews_table.php
 
@@ -297,9 +303,71 @@ php artisan migrate:rollback --step=6
 
 ---
 
+## 🎯 SEO Optimization
+
+### Enhanced SEO Fields
+
+Tất cả content tables (apartments, posts, pages) đều có:
+- ✅ **Basic SEO**: meta_title, meta_description, meta_keywords
+- ✅ **Open Graph**: og_image_url cho social sharing
+- ✅ **Structured Data**: schema_markup (JSON-LD) cho Google
+- ✅ **Canonical URLs**: canonical_url để tránh duplicate content
+- ✅ **SEO Flags**: noindex, nofollow
+- ✅ **Focus Keyword**: focus_keyword (cho posts)
+
+### Schema Markup Examples
+
+**Apartment Schema:**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Apartment",
+  "name": "18th Floor Sunset Town Phu Quoc",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Phu Quoc",
+    "addressCountry": "VN"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "10.2899",
+    "longitude": "103.9840"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "732",
+    "priceCurrency": "USD"
+  }
+}
+```
+
+**Article Schema (Blog Post):**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Why Sunset Town is the Best Place...",
+  "author": {
+    "@type": "Person",
+    "name": "Alex Nguyen"
+  },
+  "datePublished": "2024-10-24"
+}
+```
+
+Xem thêm: `SEO_STRATEGY.md`
+
+---
+
 ## 📝 Notes
 
-### 1. **Media Management**
+### 1. **Contact Strategy - Phone First**
+- ⭐ **Phone là trường bắt buộc** trong contacts table
+- Email và message là optional
+- Hỗ trợ Zalo (popular in Vietnam)
+- Không cần booking system phức tạp - chỉ cần form liên hệ
+
+### 2. **Media Management**
 - Sử dụng **Curator** cho featured images và galleries
 - `featured_image_id` và `gallery_image_ids` reference đến bảng `media` của Curator
 - Có thể dùng thêm **Spatie Media Library** cho advanced features
@@ -321,12 +389,25 @@ php artisan migrate:rollback --step=6
 - Dễ thêm fields mới mà không cần migration
 
 ### 6. **Guest Users**
-- `bookings`, `contacts`, `reviews`, `favorites` hỗ trợ guest users
+- `contacts`, `reviews`, `favorites` hỗ trợ guest users
 - Dùng `guest_session_id` hoặc `guest_email` để track
+- **Bookings**: Nếu giữ lại, cũng hỗ trợ guest users
 
-### 7. **Status Fields**
+### 7. **SEO Focus**
+- Tất cả content có SEO fields đầy đủ
+- Schema markup cho better Google ranking
+- Local SEO optimization (Phú Quốc keywords)
+- Content marketing strategy (blog posts)
+
+### 8. **Status Fields**
 - Dùng string enum cho status fields
 - Dễ mở rộng, không cần migration khi thêm status mới
+
+### 9. **Simplified for Small Business**
+- **No complex booking system** - chỉ cần contact form với phone
+- **Focus on SEO** - nhiều SEO fields để ranking tốt
+- **Content marketing** - blog posts để attract traffic
+- **Local SEO** - tối ưu cho Phú Quốc keywords
 
 ---
 

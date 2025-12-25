@@ -37,10 +37,16 @@ return new class extends Migration
             $table->boolean('is_published')->default(true);
             $table->timestamp('published_at')->nullable();
             
-            // SEO
+            // SEO - Enhanced for better ranking
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->json('meta_keywords')->nullable();
+            $table->string('og_image_url')->nullable(); // Open Graph image
+            $table->text('schema_markup')->nullable(); // JSON-LD structured data (Article schema)
+            $table->string('canonical_url')->nullable(); // Canonical URL
+            $table->boolean('noindex')->default(false); // Noindex flag
+            $table->boolean('nofollow')->default(false); // Nofollow flag
+            $table->string('focus_keyword')->nullable(); // Primary keyword for SEO
             
             // Statistics
             $table->integer('views')->default(0);

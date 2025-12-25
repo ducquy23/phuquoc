@@ -57,10 +57,15 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->timestamp('available_from')->nullable(); // When apartment becomes available
             
-            // SEO
+            // SEO - Enhanced for better ranking
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->json('meta_keywords')->nullable();
+            $table->string('og_image_url')->nullable(); // Open Graph image
+            $table->text('schema_markup')->nullable(); // JSON-LD structured data
+            $table->string('canonical_url')->nullable(); // Canonical URL
+            $table->boolean('noindex')->default(false); // Noindex flag
+            $table->boolean('nofollow')->default(false); // Nofollow flag
             
             // Additional Info
             $table->text('notes')->nullable(); // Internal notes
