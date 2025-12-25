@@ -2,8 +2,8 @@
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
             <div class="flex-shrink-0 flex items-center">
-                <a class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-1" href="#">
-                    <span>PQ</span><span class="text-primary">Rentals</span>
+                <a class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-1" href="{{ route('home') }}">
+                    <img src="{{ asset('assets/images/logo_phuquocapartmentsforrent-1.png') }}" alt="Logo" class="logo-header w-auto" style="height: 8.5rem;">
                 </a>
             </div>
             <nav class="hidden md:flex items-center space-x-1">

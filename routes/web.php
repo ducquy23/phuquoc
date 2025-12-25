@@ -15,9 +15,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/apartments', [ApartmentController::class, 'index'])->name('apartments.index');
 Route::get('/apartments/sample-detail', [ApartmentController::class, 'show'])->name('apartments.show');
 
-// Blog (listing + static detail page)
+// Blog (dynamic listing + detail pages)
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-Route::get('/blog/why-sunset-town-long-term-rentals-2024', [BlogController::class, 'show'])->name('blog.show.sunset-town');
+Route::post('/blog/filter', [BlogController::class, 'filter'])->name('blog.filter');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');

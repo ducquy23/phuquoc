@@ -3,8 +3,16 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Phu Quoc Apartment Rentals')</title>
-    
+
+    {{-- Favicon và Icons --}}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/logo_phuquocapartmentsforrent-1.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/logo_phuquocapartmentsforrent-1.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/logo_phuquocapartmentsforrent-1.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo_phuquocapartmentsforrent-1.png') }}">
+    <meta name="theme-color" content="#0EA5E9">
+
     @hasSection('metaDescription')
         <meta name="description" content="@yield('metaDescription')">
     @endif
@@ -14,10 +22,57 @@
     @else
         <link rel="canonical" href="{{ url()->current() }}">
     @endif
-    
+
+    {{-- SEO Meta Tags --}}
+    @hasSection('noindex')
+        <meta name="robots" content="noindex, nofollow">
+    @elsehasSection('nofollow')
+        <meta name="robots" content="index, nofollow">
+    @else
+        <meta name="robots" content="index, follow">
+    @endif
+
+    @hasSection('metaKeywords')
+        <meta name="keywords" content="@yield('metaKeywords')">
+    @endif
+
+    {{-- Open Graph Tags --}}
+    @hasSection('ogTitle')
+        <meta property="og:title" content="@yield('ogTitle')">
+    @endif
+    @hasSection('ogDescription')
+        <meta property="og:description" content="@yield('ogDescription')">
+    @endif
+    @hasSection('ogImage')
+        <meta property="og:image" content="@yield('ogImage')">
+    @endif
+    @hasSection('ogUrl')
+        <meta property="og:url" content="@yield('ogUrl')">
+    @endif
+    <meta property="og:type" content="@yield('ogType', 'website')">
+    <meta property="og:site_name" content="PQ Rentals">
+
+    {{-- Twitter Card Tags --}}
+    <meta name="twitter:card" content="summary_large_image">
+    @hasSection('twitterTitle')
+        <meta name="twitter:title" content="@yield('twitterTitle')">
+    @endif
+    @hasSection('twitterDescription')
+        <meta name="twitter:description" content="@yield('twitterDescription')">
+    @endif
+    @hasSection('twitterImage')
+        <meta name="twitter:image" content="@yield('twitterImage')">
+    @endif
+
+    {{-- Schema Markup --}}
+    @hasSection('schemaMarkup')
+        @yield('schemaMarkup')
+    @endif
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -67,23 +122,23 @@
             background: #475569;
         }
     </style>
-    
+
     @stack('styles')
 </head>
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-display antialiased transition-colors duration-300">
-    
+
     @include('partials.header')
-    
+
     @yield('content')
-    
+
     @include('partials.footer')
-    
+
     <script>
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
         }
     </script>
-    
+
     @stack('scripts')
 </body>
 </html>

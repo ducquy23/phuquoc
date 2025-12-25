@@ -17,7 +17,9 @@ class Option extends Model
     ];
 
     /**
-     * Lấy giá trị option theo key, có default.
+     * @param string $name
+     * @param mixed|null $default
+     * @return mixed
      */
     public static function get(string $name, mixed $default = null): mixed
     {
@@ -31,7 +33,10 @@ class Option extends Model
     }
 
     /**
-     * Set / update giá trị option.
+     * @param string $name
+     * @param mixed $value
+     * @param string|null $description
+     * @return static
      */
     public static function set(string $name, mixed $value, ?string $description = null): static
     {
