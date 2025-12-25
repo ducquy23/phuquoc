@@ -225,6 +225,75 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Newsletter subscription form
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterEmail = document.getElementById('newsletter-email');
+    const newsletterSubmit = document.getElementById('newsletter-submit');
+    const newsletterSubmitText = document.getElementById('newsletter-submit-text');
+    const newsletterMessage = document.getElementById('newsletter-message');
+
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = newsletterEmail.value.trim();
+            if (!email) {
+                showNewsletterMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            // Disable form
+            newsletterSubmit.disabled = true;
+            newsletterSubmitText.textContent = 'Subscribing...';
+            newsletterMessage.classList.add('hidden');
+
+            // Submit via AJAX
+            fetch('{{ route("blog.subscribe") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNewsletterMessage(data.message, 'success');
+                    newsletterEmail.value = '';
+                } else {
+                    showNewsletterMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNewsletterMessage('An error occurred. Please try again later.', 'error');
+            })
+            .finally(() => {
+                // Re-enable form
+                newsletterSubmit.disabled = false;
+                newsletterSubmitText.textContent = 'Subscribe';
+            });
+        });
+    }
+
+    function showNewsletterMessage(message, type) {
+        newsletterMessage.textContent = message;
+        newsletterMessage.classList.remove('hidden', 'text-green-600', 'text-red-600', 'dark:text-green-400', 'dark:text-red-400');
+        
+        if (type === 'success') {
+            newsletterMessage.classList.add('text-green-600', 'dark:text-green-400');
+        } else {
+            newsletterMessage.classList.add('text-red-600', 'dark:text-red-400');
+        }
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            newsletterMessage.classList.add('hidden');
+        }, 5000);
+    }
 });
 </script>
 @endpush
@@ -238,13 +307,15 @@ document.addEventListener('DOMContentLoaded', function() {
         <p class="text-gray-600 dark:text-gray-300 mb-8 max-w-xl mx-auto">
             Join our newsletter to receive weekly updates on new property listings, island news, and exclusive rental deals.
         </p>
-        <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input class="flex-grow px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-background-dark dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Your email address" type="email"/>
-            <button class="bg-primary hover:bg-sky-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/30 transition-all hover:scale-105 whitespace-nowrap">
-                Subscribe
+        <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            @csrf
+            <input id="newsletter-email" name="email" class="flex-grow px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-background-dark dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all @error('email') border-red-500 @enderror" placeholder="Your email address" type="email" required/>
+            <button type="submit" id="newsletter-submit" class="bg-primary hover:bg-sky-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/30 transition-all hover:scale-105 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                <span id="newsletter-submit-text">Subscribe</span>
             </button>
-        </div>
-        <p class="text-xs text-gray-400 mt-4">We respect your privacy. Unsubscribe at any time.</p>
+        </form>
+        <div id="newsletter-message" class="mt-4 text-sm font-medium hidden"></div>
+        <p class="text-xs text-gray-400 mt-2">We respect your privacy. Unsubscribe at any time.</p>
     </div>
 </section>
 @endsection

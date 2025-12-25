@@ -23,23 +23,29 @@ class OptionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('option_name')
-                    ->label('Key')
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(255),
+                Forms\Components\Section::make('Option Details')
+                    ->description('Note: Contact page settings can be managed via "Contact Settings" page in Site Settings menu.')
+                    ->schema([
+                        Forms\Components\TextInput::make('option_name')
+                            ->label('Key')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255)
+                            ->helperText('Use descriptive keys like: contact_agent_name, general_site_name, etc.'),
 
-                Forms\Components\Textarea::make('option_value')
-                    ->label('Value')
-                    ->rows(6)
-                    ->required(),
+                        Forms\Components\Textarea::make('option_value')
+                            ->label('Value')
+                            ->rows(6)
+                            ->required()
+                            ->helperText('Enter the value for this option. Can be text, URL, or JSON.'),
 
-                Forms\Components\Textarea::make('description')
-                    ->label('Description')
-                    ->rows(3)
-                    ->columnSpanFull(),
-            ])
-            ->columns(1);
+                        Forms\Components\Textarea::make('description')
+                            ->label('Description')
+                            ->rows(3)
+                            ->helperText('Optional description for this option (for admin reference only)')
+                            ->columnSpanFull(),
+                    ]),
+            ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table

@@ -7,9 +7,10 @@
                 </a>
             </div>
             <nav class="hidden md:flex items-center space-x-1">
-                <a class="text-primary font-semibold bg-blue-50 dark:bg-blue-900/20 px-6 py-2.5 rounded-full transition-all" href="#">Home</a>
-                <a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium px-6 py-2.5 transition-colors" href="#apartments">Properties</a>
-                <a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium px-6 py-2.5 transition-colors" href="#contact">Contact</a>
+                <a class="{{ request()->routeIs('home') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-6 py-2.5 rounded-full transition-all font-medium" href="{{ route('home') }}">Home</a>
+                <a class="{{ request()->routeIs('apartments.*') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-6 py-2.5 rounded-full transition-all font-medium" href="{{ route('apartments.index') }}">Apartments</a>
+                <a class="{{ request()->routeIs('blog.*') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-6 py-2.5 rounded-full transition-all font-medium" href="{{ route('blog.index') }}">Blog</a>
+                <a class="{{ request()->routeIs('contact') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-6 py-2.5 rounded-full transition-all font-medium" href="{{ route('contact') }}">Contact</a>
             </nav>
             <div class="hidden lg:flex items-center space-x-6">
                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Need Help? Call us now!</span>

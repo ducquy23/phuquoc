@@ -18,10 +18,12 @@ Route::get('/apartments/sample-detail', [ApartmentController::class, 'show'])->n
 // Blog (dynamic listing + detail pages)
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::post('/blog/filter', [BlogController::class, 'filter'])->name('blog.filter');
+Route::post('/blog/subscribe', [BlogController::class, 'subscribe'])->name('blog.subscribe');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // SEO pages
 Route::get('/phu-quoc-long-term-rentals', [SeoController::class, 'longTerm'])->name('seo.long-term-rentals');
