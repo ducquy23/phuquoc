@@ -55,6 +55,13 @@ class HomeService
         $homeTestimonials = json_decode(Option::get('home_testimonials', '[]'), true) ?? [];
         $homeGalleryImages = json_decode(Option::get('home_gallery_images', '[]'), true) ?? [];
 
+        // Contact information
+        $contactInfo = [
+            'email' => Option::get('contact_email', ''),
+            'phone' => Option::get('contact_phone', ''),
+            'zalo_whatsapp' => Option::get('contact_zalo_whatsapp', Option::get('contact_phone', '')),
+        ];
+
         return [
             'latestPosts' => $latestPosts,
             'apartments' => $apartments,
@@ -64,6 +71,7 @@ class HomeService
             'homeAboutDetails' => $homeAboutDetails,
             'homeTestimonials' => $homeTestimonials,
             'homeGalleryImages' => $homeGalleryImages,
+            'contactInfo' => $contactInfo,
         ];
     }
 

@@ -26,13 +26,14 @@ class ContactSettings extends Page implements HasForms
     public function mount(): void
     {
         $this->form->fill([
-            'agent_name' => Option::get('contact_agent_name', 'Vu Van Hai'),
-            'agent_title' => Option::get('contact_agent_title', 'Your friendly neighborhood buddy'),
+            'agent_name' => Option::get('contact_agent_name', ''),
+            'agent_title' => Option::get('contact_agent_title', ''),
             'agent_bio' => Option::get('contact_agent_bio', ''),
             'agent_photo' => Option::get('contact_agent_photo', ''),
-            'contact_email' => Option::get('contact_email', 'vnha231@gmail.com'),
-            'contact_phone' => Option::get('contact_phone', '+84 9024 07024'),
-            'contact_location' => Option::get('contact_location', 'Sunset Town, Phu Quoc, Vietnam'),
+            'contact_email' => Option::get('contact_email', ''),
+            'contact_phone' => Option::get('contact_phone', ''),
+            'contact_zalo_whatsapp' => Option::get('contact_zalo_whatsapp', ''),
+            'contact_location' => Option::get('contact_location', ''),
             'social_twitter' => Option::get('contact_social_twitter', ''),
             'social_facebook' => Option::get('contact_social_facebook', ''),
             'social_instagram' => Option::get('contact_social_instagram', ''),
@@ -100,6 +101,13 @@ class ContactSettings extends Page implements HasForms
                             ->tel()
                             ->required()
                             ->maxLength(255)
+                            ->columnSpan(1),
+                        Forms\Components\TextInput::make('contact_zalo_whatsapp')
+                            ->label('Zalo / WhatsApp')
+                            ->tel()
+                            ->maxLength(255)
+                            ->placeholder('+84 ...')
+                            ->helperText('Số điện thoại Zalo/WhatsApp (có thể giống Phone)')
                             ->columnSpan(1),
                         Forms\Components\TextInput::make('contact_location')
                             ->label('Location')
@@ -177,6 +185,7 @@ class ContactSettings extends Page implements HasForms
             'contact_agent_photo' => $agentPhoto,
             'contact_email' => $data['contact_email'] ?? '',
             'contact_phone' => $data['contact_phone'] ?? '',
+            'contact_zalo_whatsapp' => $data['contact_zalo_whatsapp'] ?? '',
             'contact_location' => $data['contact_location'] ?? '',
             'contact_social_twitter' => $data['social_twitter'] ?? '',
             'contact_social_facebook' => $data['social_facebook'] ?? '',

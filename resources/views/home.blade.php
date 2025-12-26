@@ -14,6 +14,39 @@
         .home-filter-select::-ms-expand {
             display: none;
         }
+
+        /* Toast Notification */
+        #toast-container {
+            pointer-events: none;
+        }
+        #toast-container > * {
+            pointer-events: auto;
+        }
+        .toast {
+            min-width: 300px;
+            max-width: 500px;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background-color: #10b981;
+            color: white;
+        }
+        .toast.error {
+            background-color: #ef4444;
+            color: white;
+        }
     </style>
 @endpush
 
@@ -400,6 +433,9 @@
 </section>
 @endif
 <section class="py-24 bg-blue-50/50 dark:bg-gray-900 transition-colors duration-300" id="contact">
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-surface-dark rounded-[2.5rem] shadow-float overflow-hidden flex flex-col md:flex-row border border-gray-100 dark:border-gray-700">
             <div class="w-full md:w-1/2 p-10 md:p-14 lg:p-16 flex flex-col justify-center">
@@ -414,7 +450,7 @@
                         </div>
                         <div class="ml-5">
                             <p class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">Phone</p>
-                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300">+84 902-607-024</p>
+                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300">{{ $contactInfo['phone'] ?? '' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center p-4 bg-blue-50 dark:bg-gray-800 rounded-2xl transition-colors">
@@ -425,7 +461,7 @@
                         </div>
                         <div class="ml-5">
                             <p class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">Email</p>
-                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300">booking@pqrentals.com</p>
+                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300">{{ $contactInfo['email'] ?? '' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center p-4 bg-blue-50 dark:bg-gray-800 rounded-2xl transition-colors">
@@ -436,26 +472,40 @@
                         </div>
                         <div class="ml-5">
                             <p class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">Zalo / WhatsApp</p>
-                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300">+84 902-607-024</p>
+                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300">{{ $contactInfo['zalo_whatsapp'] ?? '' }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="w-full md:w-1/2 bg-gray-50 dark:bg-gray-800/50 p-10 md:p-14 lg:p-16 flex flex-col justify-center border-l border-gray-100 dark:border-gray-700">
-                <form class="space-y-6">
+                <form id="contact-form" action="{{ route('contact.store') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <input type="hidden" name="interest" value="General Inquiry">
+
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="name">Name</label>
-                        <input class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="name" placeholder="Your full name" type="text"/>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="name">Name <span class="text-red-500">*</span></label>
+                        <input class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="name" name="name" placeholder="Your full name" type="text" required/>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="email">Email</label>
-                        <input class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="email" placeholder="your@email.com" type="email"/>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="email">Email <span class="text-red-500">*</span></label>
+                        <input class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="email" name="email" placeholder="your@email.com" type="email" required/>
                     </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="phone">Phone</label>
+                        <input class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="phone" name="phone" placeholder="+84 ..." type="tel"/>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="message">Message</label>
-                        <textarea class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none" id="message" placeholder="How can we help you?" rows="5"></textarea>
+                        <textarea class="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none" id="message" name="message" placeholder="How can we help you?" rows="5"></textarea>
                     </div>
-                    <button class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:scale-95" type="submit">Send Message</button>
+
+                    <button id="contact-submit-btn" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" type="submit">
+                        <span id="contact-submit-text">Send Message</span>
+                        <span id="contact-submit-loading" class="hidden">Sending...</span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -551,5 +601,115 @@
         // Initialize
         updateSlider();
     })();
+
+    // Toast Notification Function
+    function showToast(message, type = 'success') {
+        const toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type} flex items-center gap-3 p-4 rounded-xl shadow-lg`;
+        toast.innerHTML = `
+            <span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : 'error'}</span>
+            <span class="flex-1 font-medium">${message}</span>
+            <button onclick="this.parentElement.remove()" class="text-white/80 hover:text-white">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 5000);
+    }
+
+    // Contact Form AJAX Submission
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('contact-submit-btn');
+            const submitText = document.getElementById('contact-submit-text');
+            const submitLoading = document.getElementById('contact-submit-loading');
+            const formData = new FormData(this);
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitText.classList.add('hidden');
+            submitLoading.classList.remove('hidden');
+
+            // Send AJAX request
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                // Check if response is ok
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw err;
+                    }).catch(() => {
+                        throw new Error('Server error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success toast
+                    showToast(data.message || 'Thank you! Your message has been sent successfully.', 'success');
+
+                    // Reset form
+                    contactForm.reset();
+                } else {
+                    // Show error toast with validation errors if available
+                    let errorMessage = data.message || 'Something went wrong. Please try again.';
+
+                    // If there are validation errors, show first error
+                    if (data.errors && Object.keys(data.errors).length > 0) {
+                        const firstError = Object.values(data.errors)[0];
+                        errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+                    }
+
+                    showToast(errorMessage, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                let errorMessage = 'An error occurred. Please try again later.';
+
+                // Handle validation errors
+                if (error.errors && Object.keys(error.errors).length > 0) {
+                    const firstError = Object.values(error.errors)[0];
+                    errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                showToast(errorMessage, 'error');
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitText.classList.remove('hidden');
+                submitLoading.classList.add('hidden');
+            });
+        });
+    }
 </script>
 @endpush
