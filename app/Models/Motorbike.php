@@ -22,6 +22,7 @@ class Motorbike extends Model
         'price_monthly',
         'currency',
         'featured_image_id',
+        'gallery_image_ids',
         'status', // available, unavailable, maintenance
         'is_published',
         'is_featured',
@@ -36,6 +37,7 @@ class Motorbike extends Model
         'is_featured' => 'boolean',
         'sort_order' => 'integer',
         'published_at' => 'datetime',
+        'gallery_image_ids' => 'array',
     ];
 
     /**
@@ -65,6 +67,29 @@ class Motorbike extends Model
 
         // Fallback to default image
         return asset('assets/images/Image-not-found.png');
+    }
+
+    /**
+     * Get gallery image URLs
+     */
+    public function getGalleryImageUrlsAttribute(): array
+    {
+        $urls = [];
+
+        if ($this->gallery_image_ids && is_array($this->gallery_image_ids)) {
+            foreach ($this->gallery_image_ids as $imageId) {
+                try {
+                    $media = Media::find($imageId);
+                    if ($media && $media->url) {
+                        $urls[] = $media->url;
+                    }
+                } catch (\Exception $e) {
+                    // Silently fail
+                }
+            }
+        }
+
+        return $urls;
     }
 
     /**

@@ -118,6 +118,14 @@ class MotorbikeResource extends Resource
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                     ->directory('motorbikes')
                                     ->columnSpanFull(),
+                                CuratorPicker::make('gallery_image_ids')
+                                    ->label('Gallery Images')
+                                    ->helperText('Additional images for the motorbike gallery')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                    ->directory('motorbikes')
+                                    ->multiple()
+                                    ->maxItems(20)
+                                    ->columnSpanFull(),
                             ]),
 
                         Forms\Components\Tabs\Tab::make('Status & Settings')

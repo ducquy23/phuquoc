@@ -66,17 +66,63 @@
         </div>
 
         <!-- Image Gallery -->
+        @php
+            $galleryImages = $motorbike->gallery_image_urls;
+            $allImages = array_merge([$motorbike->featured_image_url], $galleryImages);
+        @endphp
         <div class="mb-8">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
+            <!-- Main Image -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg mb-4">
                 <div class="aspect-[16/10] bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-                    <img src="{{ $motorbike->featured_image_url }}"
+                    <img id="main-gallery-image"
+                         src="{{ $allImages[0] ?? $motorbike->featured_image_url }}"
                          alt="{{ $motorbike->name }}"
-                         class="w-full h-full object-contain p-8"
+                         class="w-full h-full object-contain p-8 cursor-pointer"
+                         onclick="openLightbox(0)"
                          onerror="this.src='{{ asset('assets/images/Image-not-found.png') }}'"
                     />
                 </div>
             </div>
+            
+            <!-- Thumbnail Gallery -->
+            @if(count($allImages) > 1)
+            <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
+                @foreach($allImages as $index => $image)
+                <div class="aspect-square bg-white dark:bg-gray-800 rounded-lg overflow-hidden border-2 {{ $index === 0 ? 'border-primary' : 'border-gray-200 dark:border-gray-700' }} cursor-pointer hover:border-primary transition-colors"
+                     onclick="changeMainImage({{ $index }})">
+                    <img src="{{ $image }}"
+                         alt="{{ $motorbike->name }} - Image {{ $index + 1 }}"
+                         class="w-full h-full object-cover"
+                         onerror="this.src='{{ asset('assets/images/Image-not-found.png') }}'"
+                    />
+                </div>
+                @endforeach
+            </div>
+            @endif
         </div>
+
+        <!-- Lightbox Modal -->
+        @if(count($allImages) > 0)
+        <div id="lightbox-modal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
+                <span class="material-symbols-outlined text-3xl">close</span>
+            </button>
+            @if(count($allImages) > 1)
+            <button onclick="navigateLightbox(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 bg-black/50 rounded-full p-2">
+                <span class="material-symbols-outlined text-3xl">chevron_left</span>
+            </button>
+            <button onclick="navigateLightbox(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 bg-black/50 rounded-full p-2">
+                <span class="material-symbols-outlined text-3xl">chevron_right</span>
+            </button>
+            @endif
+            <div class="max-w-6xl w-full">
+                <img id="lightbox-image" src="" alt="{{ $motorbike->name }}" class="max-h-[90vh] w-full object-contain mx-auto">
+                <div class="text-center mt-4 text-white">
+                    <span id="lightbox-counter">{{ count($allImages) > 0 ? '1' : '0' }}</span> / {{ count($allImages) }}
+                </div>
+            </div>
+        </div>
+        @endif
 
         <!-- Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -196,5 +242,85 @@
         @endif
     </div>
 </main>
+
+@push('scripts')
+<script>
+    const allImages = @json($allImages);
+    let currentImageIndex = 0;
+
+    function changeMainImage(index) {
+        currentImageIndex = index;
+        const mainImage = document.getElementById('main-gallery-image');
+        if (mainImage && allImages[index]) {
+            mainImage.src = allImages[index];
+        }
+        
+        // Update thumbnail borders
+        document.querySelectorAll('.aspect-square').forEach((thumb, i) => {
+            if (i === index) {
+                thumb.classList.remove('border-gray-200', 'dark:border-gray-700');
+                thumb.classList.add('border-primary');
+            } else {
+                thumb.classList.remove('border-primary');
+                thumb.classList.add('border-gray-200', 'dark:border-gray-700');
+            }
+        });
+    }
+
+    function openLightbox(index) {
+        currentImageIndex = index;
+        const lightbox = document.getElementById('lightbox-modal');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const counter = document.getElementById('lightbox-counter');
+        
+        if (lightbox && lightboxImage && allImages[index]) {
+            lightboxImage.src = allImages[index];
+            if (counter) {
+                counter.textContent = (index + 1) + ' / ' + allImages.length;
+            }
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightbox-modal');
+        if (lightbox) {
+            lightbox.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function navigateLightbox(direction) {
+        currentImageIndex += direction;
+        
+        if (currentImageIndex < 0) {
+            currentImageIndex = allImages.length - 1;
+        } else if (currentImageIndex >= allImages.length) {
+            currentImageIndex = 0;
+        }
+        
+        openLightbox(currentImageIndex);
+    }
+
+    // Close lightbox on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+            navigateLightbox(-1);
+        } else if (e.key === 'ArrowRight') {
+            navigateLightbox(1);
+        }
+    });
+
+    // Close lightbox when clicking outside image
+    document.getElementById('lightbox-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLightbox();
+        }
+    });
+</script>
+@endpush
 @endsection
 
