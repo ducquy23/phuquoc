@@ -1,6 +1,6 @@
 <!-- Testimonials -->
 <div class="mt-20">
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 pt-4">
         <div>
             <p class="text-xs font-bold tracking-[0.25em] text-gray-400 dark:text-gray-500 uppercase mb-2">
                 Customer love us!</p>

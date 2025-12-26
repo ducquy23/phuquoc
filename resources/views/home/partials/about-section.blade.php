@@ -1,4 +1,4 @@
-<section class="pt-32 pb-24 bg-white dark:bg-gray-900 transition-colors duration-300">
+<section class="pt-24 pb-24 bg-white dark:bg-gray-900 transition-colors duration-300">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row items-center gap-10 md:gap-14">
             <div class="flex-shrink-0">
