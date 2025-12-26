@@ -12,14 +12,14 @@
         <p class="text-lg md:text-xl text-gray-700 dark:text-gray-200 max-w-2xl mx-auto mb-12 font-medium drop-shadow-sm">
             Find the best long-term and short-term rentals with stunning ocean views.
         </p>
-        <div
+        <form method="GET" action="{{ route('search') }}" id="hero-search-form"
             class="w-full max-w-5xl bg-white dark:bg-surface-dark rounded-[2rem] shadow-float p-8 border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95">
             <div class="flex flex-col gap-6">
                 <div class="flex flex-col md:flex-row items-center gap-4">
                     <div class="relative flex-1 w-full">
                         <span
                             class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">search</span>
-                        <input
+                        <input name="search" id="hero-search-keyword"
                             class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all placeholder-gray-400"
                             placeholder="Keyword" type="text"/>
                     </div>
@@ -27,43 +27,46 @@
                         <button
                             id="status-filter-all"
                             data-status="all"
+                            type="button"
                             class="status-filter-btn flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold bg-primary text-white shadow-sm transition-all">
                             All
                         </button>
                         <button
                             id="status-filter-available"
                             data-status="available"
+                            type="button"
                             class="status-filter-btn flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-white transition-colors">
                             Available
                         </button>
+                        <input type="hidden" name="status" id="hero-status-filter" value="all">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="relative group">
-                        <select
+                        <select name="location" id="hero-location-filter"
                             class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
-                            @foreach($heroLocations ?? [] as $location)
-                                <option value="{{ $location }}">{{ $location }}</option>
+                            @foreach($heroLocations ?? [] as $index => $location)
+                                <option value="{{ $index === 0 ? 'all' : $location }}">{{ $location }}</option>
                             @endforeach
                         </select>
                         <span
                             class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                     </div>
                     <div class="relative group">
-                        <select
+                        <select name="property_type" id="hero-property-type-filter"
                             class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
-                            @foreach($heroPropertyTypes ?? [] as $type)
-                                <option value="{{ $type }}">{{ $type }}</option>
+                            @foreach($heroPropertyTypes ?? [] as $index => $type)
+                                <option value="{{ $index === 0 ? 'all' : $type }}">{{ $type }}</option>
                             @endforeach
                         </select>
                         <span
                             class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                     </div>
                     <div class="relative group">
-                        <select
+                        <select name="bedrooms" id="hero-bedrooms-filter"
                             class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
-                            @foreach($heroBeds ?? [] as $bed)
-                                <option value="{{ $bed }}">{{ $bed }}</option>
+                            @foreach($heroBeds ?? [] as $index => $bed)
+                                <option value="{{ $index === 0 ? 'all' : $bed }}">{{ $bed }}</option>
                             @endforeach
                         </select>
                         <span
@@ -92,8 +95,8 @@
                                     <input type="range" id="price-max" min="{{ $priceRange['min'] ?? 0 }}" max="{{ $priceRange['max'] ?? 2000 }}" value="{{ $priceRange['max'] ?? 2000 }}" step="10"
                                            class="price-range-input">
                                 </div>
-                                <input type="hidden" id="price-min-value" name="price_min" value="{{ $priceRange['min'] ?? 0 }}">
-                                <input type="hidden" id="price-max-value" name="price_max" value="{{ $priceRange['max'] ?? 2000 }}">
+                                <input type="hidden" id="price-min-value" name="price_min" value="">
+                                <input type="hidden" id="price-max-value" name="price_max" value="">
                             </div>
                         </div>
 
@@ -103,7 +106,7 @@
                                 <label for="min-area" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Min Area (m²)
                                 </label>
-                                <input type="number" id="min-area" min="0" step="1"
+                                <input type="number" id="min-area" name="min_area" min="0" step="1"
                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                                        placeholder="Min area">
                             </div>
@@ -111,7 +114,7 @@
                                 <label for="max-area" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Max Area (m²)
                                 </label>
-                                <input type="number" id="max-area" min="0" step="1"
+                                <input type="number" id="max-area" name="max_area" min="0" step="1"
                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                                        placeholder="Max area">
                             </div>
@@ -131,14 +134,14 @@
                             <span class="material-symbols-outlined text-xl mr-1">tune</span>
                             <span id="advance-search-text">Advance Search</span>
                         </button>
-                        <button
+                        <button type="submit"
                             class="w-full md:w-40 bg-primary hover:bg-secondary text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:scale-95">
                             Search
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </section>
 

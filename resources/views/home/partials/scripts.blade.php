@@ -120,6 +120,7 @@
     // Status Filter Buttons (All/Available)
     (function() {
         const statusFilterButtons = document.querySelectorAll('.status-filter-btn');
+        const statusHiddenInput = document.getElementById('hero-status-filter');
         
         if (statusFilterButtons.length > 0) {
             statusFilterButtons.forEach(button => {
@@ -134,10 +135,11 @@
                     this.classList.remove('text-gray-500', 'dark:text-gray-400');
                     this.classList.add('bg-primary', 'text-white', 'shadow-sm');
                     
-                    // Get the status value from data attribute
+                    // Update hidden input with status value
                     const status = this.getAttribute('data-status');
-                    console.log('Selected status:', status);
-                    // You can add filtering logic here if needed
+                    if (statusHiddenInput) {
+                        statusHiddenInput.value = status;
+                    }
                 });
             });
         }
@@ -254,6 +256,18 @@
             // Initialize
             updatePriceRange();
             updateZIndex();
+        }
+
+        // Handle form submission - ensure price values are set
+        const heroSearchForm = document.getElementById('hero-search-form');
+        if (heroSearchForm) {
+            heroSearchForm.addEventListener('submit', function(e) {
+                // Update hidden inputs with current values before submit
+                if (priceMinValue && priceMaxValue) {
+                    priceMinValue.value = priceMin ? priceMin.value : '';
+                    priceMaxValue.value = priceMax ? priceMax.value : '';
+                }
+            });
         }
     })();
 

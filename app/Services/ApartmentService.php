@@ -20,30 +20,58 @@ class ApartmentService
     public function getPublishedApartments(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
         $query = Apartment::query()
+            ->with(['heroFilterLocation', 'heroFilterPropertyType', 'heroFilterBed'])
             ->where('is_published', true);
 
-        // Filter by property type
-        if (!empty($filters['property_type']) && $filters['property_type'] !== 'all') {
-            $query->where('property_type', $filters['property_type']);
-        }
-
-        // Filter by location (district)
+        // Filter by hero filter location
         if (!empty($filters['location']) && $filters['location'] !== 'all') {
-            $query->where('district', $filters['location']);
+            // Try to find location by name first
+            $location = \App\Models\HeroFilterLocation::where('name', $filters['location'])->first();
+            if ($location) {
+                $query->where('hero_filter_location_id', $location->id);
+            } else {
+                // Fallback to district if not found in hero filter locations
+                $query->where('district', 'like', '%' . $filters['location'] . '%');
+            }
         }
 
-        // Filter by bedrooms
+        // Filter by hero filter property type
+        if (!empty($filters['property_type']) && $filters['property_type'] !== 'all') {
+            // Try to find property type by name first
+            $propertyType = \App\Models\HeroFilterPropertyType::where('name', $filters['property_type'])->first();
+            if ($propertyType) {
+                $query->where('hero_filter_property_type_id', $propertyType->id);
+            }
+        }
+
+        // Filter by hero filter beds
         if (!empty($filters['bedrooms']) && $filters['bedrooms'] !== 'all') {
-            if ($filters['bedrooms'] === '3+') {
-                $query->where('bedrooms', '>=', 3);
-            } else {
-                $query->where('bedrooms', $filters['bedrooms']);
+            // Try to find bed by name first
+            $bed = \App\Models\HeroFilterBed::where('name', $filters['bedrooms'])->first();
+            if ($bed) {
+                $query->where('hero_filter_bed_id', $bed->id);
             }
         }
 
         // Filter by status
         if (!empty($filters['status']) && $filters['status'] !== 'all') {
             $query->where('status', $filters['status']);
+        }
+
+        // Filter by price range
+        if (!empty($filters['price_min'])) {
+            $query->where('price_monthly', '>=', (int)$filters['price_min']);
+        }
+        if (!empty($filters['price_max'])) {
+            $query->where('price_monthly', '<=', (int)$filters['price_max']);
+        }
+
+        // Filter by area range
+        if (!empty($filters['min_area'])) {
+            $query->where('area', '>=', (float)$filters['min_area']);
+        }
+        if (!empty($filters['max_area'])) {
+            $query->where('area', '<=', (float)$filters['max_area']);
         }
 
         // Search functionality
@@ -53,8 +81,8 @@ class ApartmentService
                 $q->where('title', 'like', '%' . $search . '%')
                   ->orWhere('description', 'like', '%' . $search . '%')
                   ->orWhere('excerpt', 'like', '%' . $search . '%')
-                  ->orWhere('location', 'like', '%' . $search . '%')
-                  ->orWhere('address', 'like', '%' . $search . '%');
+                  ->orWhere('address', 'like', '%' . $search . '%')
+                  ->orWhere('district', 'like', '%' . $search . '%');
             });
         }
 

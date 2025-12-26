@@ -11,6 +11,9 @@ use App\Http\Controllers\PageController;
 // Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Search Properties
+Route::get('/search', [ApartmentController::class, 'search'])->name('search');
+
 // Apartments (listing + detail pages)
 Route::get('/apartments', [ApartmentController::class, 'index'])->name('apartments.index');
 Route::get('/apartments/{slug}', [ApartmentController::class, 'show'])->name('apartments.show');

@@ -37,35 +37,41 @@
                     <input name="search" value="{{ $filters['search'] ?? '' }}" class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border-none rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary transition-all" placeholder="Search by keyword..." type="text"/>
                 </div>
                 <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl self-start md:self-auto">
-                    <button type="button" onclick="window.location.href='{{ route('apartments.index') }}'" class="px-6 py-2 rounded-lg {{ ($filters['status'] ?? 'all') === 'all' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }} text-sm font-semibold shadow-sm transition-all">All</button>
-                    <button type="button" onclick="window.location.href='{{ route('apartments.index', ['status' => 'available']) }}'" class="px-6 py-2 rounded-lg {{ ($filters['status'] ?? 'all') === 'available' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }} text-sm font-medium transition-all">Available</button>
+                    <button type="button" id="status-filter-all-page" data-status="all" class="status-filter-page-btn px-6 py-2 rounded-lg {{ ($filters['status'] ?? 'all') === 'all' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }} text-sm font-semibold shadow-sm transition-all">All</button>
+                    <button type="button" id="status-filter-available-page" data-status="available" class="status-filter-page-btn px-6 py-2 rounded-lg {{ ($filters['status'] ?? 'all') === 'available' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }} text-sm font-medium transition-all">Available</button>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="relative group">
                     <select name="location" class="apartment-filter-select w-full appearance-none pl-4 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer">
                         <option value="all" {{ ($filters['location'] ?? 'all') === 'all' ? 'selected' : '' }}>All Main Locations</option>
-                        <option value="Sunset Town" {{ ($filters['location'] ?? '') === 'Sunset Town' ? 'selected' : '' }}>Sunset Town</option>
-                        <option value="An Thoi" {{ ($filters['location'] ?? '') === 'An Thoi' ? 'selected' : '' }}>An Thoi</option>
-                        <option value="Duong Dong" {{ ($filters['location'] ?? '') === 'Duong Dong' ? 'selected' : '' }}>Duong Dong</option>
+                        @foreach($heroLocations ?? [] as $location)
+                            @if($location !== 'All Main Locations')
+                                <option value="{{ $location }}" {{ ($filters['location'] ?? '') === $location ? 'selected' : '' }}>{{ $location }}</option>
+                            @endif
+                        @endforeach
                     </select>
                     <span class="material-icons-round absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                 </div>
                 <div class="relative group">
                     <select name="property_type" class="apartment-filter-select w-full appearance-none pl-4 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer">
                         <option value="all" {{ ($filters['property_type'] ?? 'all') === 'all' ? 'selected' : '' }}>All Types</option>
-                        <option value="apartment" {{ ($filters['property_type'] ?? '') === 'apartment' ? 'selected' : '' }}>Apartment</option>
-                        <option value="villa" {{ ($filters['property_type'] ?? '') === 'villa' ? 'selected' : '' }}>Villa</option>
-                        <option value="studio" {{ ($filters['property_type'] ?? '') === 'studio' ? 'selected' : '' }}>Studio</option>
+                        @foreach($heroPropertyTypes ?? [] as $type)
+                            @if($type !== 'All Types')
+                                <option value="{{ $type }}" {{ ($filters['property_type'] ?? '') === $type ? 'selected' : '' }}>{{ $type }}</option>
+                            @endif
+                        @endforeach
                     </select>
                     <span class="material-icons-round absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                 </div>
                 <div class="relative group">
                     <select name="bedrooms" class="apartment-filter-select w-full appearance-none pl-4 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer">
                         <option value="all" {{ ($filters['bedrooms'] ?? 'all') === 'all' ? 'selected' : '' }}>All Beds</option>
-                        <option value="1" {{ ($filters['bedrooms'] ?? '') === '1' ? 'selected' : '' }}>1 Bed</option>
-                        <option value="2" {{ ($filters['bedrooms'] ?? '') === '2' ? 'selected' : '' }}>2 Beds</option>
-                        <option value="3+" {{ ($filters['bedrooms'] ?? '') === '3+' ? 'selected' : '' }}>3+ Beds</option>
+                        @foreach($heroBeds ?? [] as $bed)
+                            @if($bed !== 'All Beds')
+                                <option value="{{ $bed }}" {{ ($filters['bedrooms'] ?? '') === $bed ? 'selected' : '' }}>{{ $bed }}</option>
+                            @endif
+                        @endforeach
                     </select>
                     <span class="material-icons-round absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                 </div>
@@ -187,6 +193,28 @@
             });
         });
     }
+
+    // Status Filter Buttons on Apartments Page
+    (function() {
+        const statusFilterButtons = document.querySelectorAll('.status-filter-page-btn');
+        
+        if (statusFilterButtons.length > 0) {
+            statusFilterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const status = this.getAttribute('data-status');
+                    const url = new URL(window.location);
+                    
+                    if (status === 'all') {
+                        url.searchParams.delete('status');
+                    } else {
+                        url.searchParams.set('status', status);
+                    }
+                    
+                    window.location.href = url.toString();
+                });
+            });
+        }
+    })();
 </script>
 @endpush
 
