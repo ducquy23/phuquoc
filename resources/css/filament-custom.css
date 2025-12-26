@@ -48,3 +48,23 @@
     right: 0;
     background: #ffffff;
 }
+
+.curator-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Creates a responsive grid */
+    gap: 16px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.curator-picker-grid li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.curator-picker-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

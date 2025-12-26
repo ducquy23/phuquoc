@@ -35,10 +35,8 @@ class MediaResource extends CuratorMediaResource
                     ->url(fn(Media $record) => static::getUrl('edit', ['record' => $record]))
                     ->openUrlInNewTab(false)
                     ->alignCenter(),
-
                 TextColumn::make('name')
                     ->alignCenter(),
-
                 TextColumn::make('size')
                     ->label('Dung lượng')
                     ->formatStateUsing(function (?int $state): string {
@@ -65,4 +63,5 @@ class MediaResource extends CuratorMediaResource
             ->defaultSort('created_at', 'desc')
             ->paginated([12, 24, 48, 96]);
     }
+
 }

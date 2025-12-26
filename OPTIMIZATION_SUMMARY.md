@@ -127,3 +127,4 @@ After deployment, monitor:
 - Core Web Vitals (LCP, FID, CLS)
 
 
+

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PageResource\Pages;
 use App\Models\Page;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -53,11 +54,12 @@ class PageResource extends Resource
 
                 Forms\Components\Section::make('Hero & Content')
                     ->schema([
-                        TextInput::make('hero_image_url')
+                        CuratorPicker::make('hero_image_url')
                             ->label('Hero Image URL')
-                            ->url()
-                            ->maxLength(2048)
-                            ->helperText('Dán URL ảnh banner (CDN, Storage, v.v.). Để trống nếu không dùng hero.'),
+                            ->buttonLabel('Select Image')
+                            ->color('primary')
+                            ->multiple(false)
+                            ->relationship('featuredImage', 'id'),
                         Forms\Components\RichEditor::make('body')
                             ->label('Body')
                             ->fileAttachmentsDirectory('uploads/pages')
