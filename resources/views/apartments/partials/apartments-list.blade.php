@@ -1,8 +1,8 @@
 @if($apartments->count() > 0)
 <div class="{{ ($view ?? 'grid') === 'list' ? 'space-y-6' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' }}">
     @foreach($apartments as $apartment)
-    <div class="group bg-white dark:bg-card-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-primary/5 border border-gray-100 dark:border-slate-700 transition-all duration-300 flex flex-col">
-        <div class="relative h-64 overflow-hidden">
+    <div class="group bg-white dark:bg-card-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-primary/5 border border-gray-100 dark:border-slate-700 transition-all duration-300 flex {{ ($view ?? 'grid') === 'list' ? 'flex-col md:flex-row' : 'flex-col' }}">
+        <div class="relative {{ ($view ?? 'grid') === 'list' ? 'h-64 md:h-full md:w-80 md:min-h-[240px] md:flex-shrink-0 w-full' : 'h-64 w-full' }} overflow-hidden">
             @if($apartment->is_featured)
             <span class="absolute top-4 left-4 z-10 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-md shadow-md uppercase tracking-wider">Featured</span>
             @endif
@@ -15,7 +15,9 @@
                 <span class="material-icons-round text-xl">favorite_border</span>
             </button>
             <img alt="{{ $apartment->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" src="{{ $apartment->featured_image_url }}"/>
+            @if(($view ?? 'grid') !== 'list')
             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent h-20"></div>
+            @endif
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <div class="flex justify-between items-start mb-2">

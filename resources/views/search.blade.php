@@ -400,6 +400,28 @@
                     } else {
                         wrapper.className = 'space-y-6';
                     }
+                    
+                    // Update all card classes inside wrapper
+                    const cards = wrapper.querySelectorAll('.group');
+                    cards.forEach(card => {
+                        if (view === 'grid') {
+                            card.classList.remove('flex-row', 'md:flex-row');
+                            card.classList.add('flex-col');
+                            const imageDiv = card.querySelector('div.relative');
+                            if (imageDiv) {
+                                imageDiv.classList.remove('h-64', 'md:h-full', 'md:w-80', 'md:min-h-[240px]', 'md:flex-shrink-0', 'w-full');
+                                imageDiv.classList.add('h-64', 'w-full');
+                            }
+                        } else {
+                            card.classList.remove('flex-col');
+                            card.classList.add('flex-col', 'md:flex-row');
+                            const imageDiv = card.querySelector('div.relative');
+                            if (imageDiv) {
+                                imageDiv.classList.remove('h-64', 'w-full');
+                                imageDiv.classList.add('h-64', 'md:h-full', 'md:w-80', 'md:min-h-[240px]', 'md:flex-shrink-0', 'w-full');
+                            }
+                        }
+                    });
                 }
                 
                 // Update URL without reload
