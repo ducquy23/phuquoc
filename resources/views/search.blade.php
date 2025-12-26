@@ -3,6 +3,7 @@
 @section('title', 'Search Properties - PQRentals')
 
 @push('styles')
+    @include('home.partials.styles')
     <style>
         /* Hide native select arrows for custom filters on search page */
         .apartment-filter-select {
@@ -31,6 +32,140 @@
             <li class="text-gray-900 dark:text-white font-medium">Search Properties</li>
         </ol>
     </nav>
+
+    <!-- Search Form -->
+    <div class="mb-8">
+        <form method="GET" action="{{ route('search') }}" id="search-form"
+            class="w-full bg-white dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95">
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col md:flex-row items-center gap-4">
+                    <div class="relative flex-1 w-full">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">search</span>
+                        <input name="search" id="search-keyword" value="{{ $filters['search'] ?? '' }}"
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all placeholder-gray-400"
+                            placeholder="Keyword" type="text"/>
+                    </div>
+                    <div class="flex bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full w-full md:w-auto shrink-0">
+                        <button
+                            id="status-filter-all-search"
+                            data-status="all"
+                            type="button"
+                            class="status-filter-search-btn flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold {{ ($filters['status'] ?? 'all') === 'all' ? 'bg-primary text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-white' }} transition-all">
+                            All
+                        </button>
+                        <button
+                            id="status-filter-available-search"
+                            data-status="available"
+                            type="button"
+                            class="status-filter-search-btn flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold {{ ($filters['status'] ?? 'all') === 'available' ? 'bg-primary text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-white' }} transition-colors">
+                            Available
+                        </button>
+                        <input type="hidden" name="status" id="search-status-filter" value="{{ $filters['status'] ?? 'all' }}">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="relative group">
+                        <select name="location" id="search-location-filter"
+                            class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
+                            @foreach($heroLocations ?? [] as $index => $location)
+                                <option value="{{ $index === 0 ? 'all' : $location }}" {{ ($filters['location'] ?? 'all') === ($index === 0 ? 'all' : $location) ? 'selected' : '' }}>{{ $location }}</option>
+                            @endforeach
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
+                    </div>
+                    <div class="relative group">
+                        <select name="property_type" id="search-property-type-filter"
+                            class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
+                            @foreach($heroPropertyTypes ?? [] as $index => $type)
+                                <option value="{{ $index === 0 ? 'all' : $type }}" {{ ($filters['property_type'] ?? 'all') === ($index === 0 ? 'all' : $type) ? 'selected' : '' }}>{{ $type }}</option>
+                            @endforeach
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
+                    </div>
+                    <div class="relative group">
+                        <select name="bedrooms" id="search-bedrooms-filter"
+                            class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
+                            @foreach($heroBeds ?? [] as $index => $bed)
+                                <option value="{{ $index === 0 ? 'all' : $bed }}" {{ ($filters['bedrooms'] ?? 'all') === ($index === 0 ? 'all' : $bed) ? 'selected' : '' }}>{{ $bed }}</option>
+                            @endforeach
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
+                    </div>
+                </div>
+
+                <!-- Advance Search Section (Hidden by default) -->
+                <div id="advance-search-section" class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-2 overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
+                    <div class="space-y-6">
+                        <!-- Price Range Slider -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                Price Range (Monthly)
+                            </label>
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">From <span id="price-min-display" class="text-primary font-bold">${{ number_format($priceRange['min'] ?? 0) }}</span></span>
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">To <span id="price-max-display" class="text-primary font-bold">${{ number_format($priceRange['max'] ?? 2000) }}</span></span>
+                                </div>
+                                <div class="price-range-container">
+                                    <div class="price-range-track"></div>
+                                    <div id="price-range-fill"></div>
+                                    <input type="range" id="price-min" min="{{ $priceRange['min'] ?? 0 }}" max="{{ $priceRange['max'] ?? 2000 }}" value="{{ $filters['price_min'] ?? ($priceRange['min'] ?? 0) }}" step="10"
+                                           class="price-range-input">
+                                    <input type="range" id="price-max" min="{{ $priceRange['min'] ?? 0 }}" max="{{ $priceRange['max'] ?? 2000 }}" value="{{ $filters['price_max'] ?? ($priceRange['max'] ?? 2000) }}" step="10"
+                                           class="price-range-input">
+                                </div>
+                                <input type="hidden" id="price-min-value" name="price_min" value="{{ $filters['price_min'] ?? '' }}">
+                                <input type="hidden" id="price-max-value" name="price_max" value="{{ $filters['price_max'] ?? '' }}">
+                            </div>
+                        </div>
+
+                        <!-- Area Range Inputs -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="min-area" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Min Area (m²)
+                                </label>
+                                <input type="number" id="min-area" name="min_area" min="0" step="1" value="{{ $filters['min_area'] ?? '' }}"
+                                       class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+                                       placeholder="Min area">
+                            </div>
+                            <div>
+                                <label for="max-area" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Max Area (m²)
+                                </label>
+                                <input type="number" id="max-area" name="max_area" min="0" step="1" value="{{ $filters['max_area'] ?? '' }}"
+                                       class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+                                       placeholder="Max area">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-2">
+                    <a class="inline-flex items-center text-sm font-medium text-primary bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                       href="#">
+                        <span class="material-symbols-outlined text-sm mr-2">info</span>
+                        Looking for certain features?
+                    </a>
+                    <div class="flex items-center gap-6 w-full md:w-auto justify-end">
+                        <button id="advance-search-toggle" class="hidden md:inline-flex items-center text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+                           type="button">
+                            <span class="material-symbols-outlined text-xl mr-1">tune</span>
+                            <span id="advance-search-text">Advance Search</span>
+                        </button>
+                        <button type="submit"
+                            class="w-full md:w-40 bg-primary hover:bg-secondary text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:scale-95">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
         <div>
@@ -86,7 +221,36 @@
 @endsection
 
 @push('scripts')
+@include('home.partials.scripts')
 <script>
+    // Status Filter Buttons on Search Page
+    (function() {
+        const statusFilterButtons = document.querySelectorAll('.status-filter-search-btn');
+        const statusHiddenInput = document.getElementById('search-status-filter');
+        
+        if (statusFilterButtons.length > 0) {
+            statusFilterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active state from all buttons
+                    statusFilterButtons.forEach(btn => {
+                        btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                        btn.classList.add('text-gray-500', 'dark:text-gray-400');
+                    });
+                    
+                    // Add active state to clicked button
+                    this.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    this.classList.add('bg-primary', 'text-white', 'shadow-sm');
+                    
+                    // Update hidden input with status value
+                    const status = this.getAttribute('data-status');
+                    if (statusHiddenInput) {
+                        statusHiddenInput.value = status;
+                    }
+                });
+            });
+        }
+    })();
+
     // AJAX Sort Handler
     const sortSelect = document.getElementById('sort-select');
     const apartmentsContainer = document.getElementById('apartments-container');
