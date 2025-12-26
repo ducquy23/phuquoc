@@ -57,15 +57,21 @@ class ApartmentResource extends Resource
                                     ->helperText('Full description of the property')
                                     ->columnSpanFull(),
                                 Forms\Components\Select::make('property_type')
-                                    ->label('Property Type')
+                                    ->label('Property Type (Legacy)')
                                     ->options([
                                         'apartment' => 'Apartment',
                                         'villa' => 'Villa',
                                         'studio' => 'Studio',
                                         'condo' => 'Condo',
                                     ])
-                                    ->required()
                                     ->default('apartment')
+                                    ->columnSpan(1),
+                                Forms\Components\Select::make('hero_filter_property_type_id')
+                                    ->label('Property Type')
+                                    ->relationship('heroFilterPropertyType', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->helperText('Select from configured property types')
                                     ->columnSpan(1),
                             ])
                             ->columns(2),
@@ -74,10 +80,17 @@ class ApartmentResource extends Resource
                             ->icon('heroicon-o-home')
                             ->schema([
                                 Forms\Components\TextInput::make('bedrooms')
-                                    ->label('Bedrooms')
-                                    ->required()
+                                    ->label('Bedrooms (Number)')
                                     ->numeric()
                                     ->default(1)
+                                    ->helperText('Number of bedrooms')
+                                    ->columnSpan(1),
+                                Forms\Components\Select::make('hero_filter_bed_id')
+                                    ->label('Bed Filter Option')
+                                    ->relationship('heroFilterBed', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->helperText('Select bed option for filtering (e.g., 1 Bed, 2 Beds)')
                                     ->columnSpan(1),
                                 Forms\Components\TextInput::make('bathrooms')
                                     ->label('Bathrooms')
@@ -108,10 +121,17 @@ class ApartmentResource extends Resource
                             ->icon('heroicon-o-map-pin')
                             ->schema([
                                 Forms\Components\TextInput::make('location')
-                                    ->label('Location')
+                                    ->label('Location (Legacy)')
                                     ->maxLength(255)
-                                    ->helperText('General location (e.g., Sunset Town)')
-                                    ->columnSpan(2),
+                                    ->helperText('General location text (e.g., Sunset Town)')
+                                    ->columnSpan(1),
+                                Forms\Components\Select::make('hero_filter_location_id')
+                                    ->label('Location Filter')
+                                    ->relationship('heroFilterLocation', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->helperText('Select location for filtering')
+                                    ->columnSpan(1),
                                 Forms\Components\TextInput::make('district')
                                     ->label('District')
                                     ->maxLength(255)
@@ -502,12 +522,22 @@ class ApartmentResource extends Resource
                     ->sortable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('property_type')
-                    ->label('Type')
+                    ->label('Type (Legacy)')
                     ->badge()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('heroFilterPropertyType.name')
+                    ->label('Property Type')
+                    ->badge()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('bedrooms')
                     ->label('BR')
                     ->numeric()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('heroFilterBed.name')
+                    ->label('Bed Filter')
+                    ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('bathrooms')
                     ->label('BA')
@@ -520,6 +550,10 @@ class ApartmentResource extends Resource
                 Tables\Columns\TextColumn::make('district')
                     ->label('District')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('heroFilterLocation.name')
+                    ->label('Location Filter')
+                    ->badge()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('price_monthly')
                     ->label('Monthly Price')
                     ->money('USD')
@@ -549,7 +583,20 @@ class ApartmentResource extends Resource
             ])
             ->defaultSort('published_at', 'desc')
             ->filters([
+                Tables\Filters\SelectFilter::make('hero_filter_location_id')
+                    ->label('Location')
+                    ->relationship('heroFilterLocation', 'name')
+                    ->multiple(),
+                Tables\Filters\SelectFilter::make('hero_filter_property_type_id')
+                    ->label('Property Type')
+                    ->relationship('heroFilterPropertyType', 'name')
+                    ->multiple(),
+                Tables\Filters\SelectFilter::make('hero_filter_bed_id')
+                    ->label('Bed Filter')
+                    ->relationship('heroFilterBed', 'name')
+                    ->multiple(),
                 Tables\Filters\SelectFilter::make('property_type')
+                    ->label('Property Type (Legacy)')
                     ->options([
                         'apartment' => 'Apartment',
                         'villa' => 'Villa',

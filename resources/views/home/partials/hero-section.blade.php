@@ -38,10 +38,9 @@
                     <div class="relative group">
                         <select
                             class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
-                            <option>All Main Locations</option>
-                            <option>Sunset Town</option>
-                            <option>An Thoi</option>
-                            <option>Duong Dong</option>
+                            @foreach($heroLocations ?? [] as $location)
+                                <option value="{{ $location }}">{{ $location }}</option>
+                            @endforeach
                         </select>
                         <span
                             class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
@@ -49,10 +48,9 @@
                     <div class="relative group">
                         <select
                             class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
-                            <option>All Types</option>
-                            <option>Studio</option>
-                            <option>1 Bedroom</option>
-                            <option>2 Bedrooms</option>
+                            @foreach($heroPropertyTypes ?? [] as $type)
+                                <option value="{{ $type }}">{{ $type }}</option>
+                            @endforeach
                         </select>
                         <span
                             class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
@@ -60,9 +58,9 @@
                     <div class="relative group">
                         <select
                             class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
-                            <option>All Beds</option>
-                            <option>1 Bed</option>
-                            <option>2 Beds</option>
+                            @foreach($heroBeds ?? [] as $bed)
+                                <option value="{{ $bed }}">{{ $bed }}</option>
+                            @endforeach
                         </select>
                         <span
                             class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
@@ -95,26 +93,25 @@
                 <div class="relative w-40 h-28 rounded-xl overflow-hidden shrink-0">
                     <img alt="Featured Apartment"
                          class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDms_FNhLLxe-Nloyhv-339Ogd8l-cpI83QgWbA6fsyY9WZBRMAG00Ztz4AeuMXg-3n7VYZxqEnL4O_3WWXZGB9lx_Xr2hlF5p5SiZi_CdodhaYLAxq5vNs0VPsSX_JJ7nFrR5pIiQAJbCOorF_jf6OTfvLHZDDBoTURGA4-B5EXlRbZsyCiZh3HDnes99QAOUqwv_wxONuWxP0dCuDUDRCuIXhNAEaCP4K28y1dh2kf_LVyW_2G8nWgTICpR9TspneCftKYnMmC4nv"/>
+                         src="{{ $heroFeaturedApartment['image'] ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuDms_FNhLLxe-Nloyhv-339Ogd8l-cpI83QgWbA6fsyY9WZBRMAG00Ztz4AeuMXg-3n7VYZxqEnL4O_3WWXZGB9lx_Xr2hlF5p5SiZi_CdodhaYLAxq5vNs0VPsSX_JJ7nFrR5pIiQAJbCOorF_jf6OTfvLHZDDBoTURGA4-B5EXlRbZsyCiZh3HDnes99QAOUqwv_wxONuWxP0dCuDUDRCuIXhNAEaCP4K28y1dh2kf_LVyW_2G8nWgTICpR9TspneCftKYnMmC4nv' }}"/>
                     <div
                         class="absolute top-2 left-2 bg-primary text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">
                         Featured
                     </div>
                 </div>
                 <div class="flex-1 pr-2">
-                    <h3 class="text-base font-bold text-gray-900 dark:text-white mb-0.5 leading-snug">18th Floor
-                        Sunset Town Phu Quoc | One Bedroom</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Sea + Firework View</p>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white mb-0.5 leading-snug">{{ $heroFeaturedApartment['title'] ?? '18th Floor Sunset Town Phu Quoc | One Bedroom' }}</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">{{ $heroFeaturedApartment['description'] ?? 'Sea + Firework View' }}</p>
                     <div class="flex items-center gap-4 text-xs font-medium text-gray-600 dark:text-gray-300">
                         <span class="flex items-center"><span
-                                class="material-symbols-outlined text-sm mr-1 text-primary">bed</span> 1 Bed</span>
+                                class="material-symbols-outlined text-sm mr-1 text-primary">bed</span> {{ $heroFeaturedApartment['beds'] ?? '1 Bed' }}</span>
                         <span class="flex items-center"><span
-                                class="material-symbols-outlined text-sm mr-1 text-primary">square_foot</span> 50 m²</span>
+                                class="material-symbols-outlined text-sm mr-1 text-primary">square_foot</span> {{ $heroFeaturedApartment['area'] ?? '50 m²' }}</span>
                     </div>
                 </div>
                 <div class="text-right pr-4 border-l border-gray-100 dark:border-gray-700 pl-4">
                     <div class="text-[10px] font-bold text-primary mb-1 uppercase tracking-wide">Available</div>
-                    <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none mb-1">$732</div>
+                    <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none mb-1">{{ $heroFeaturedApartment['price'] ?? '$732' }}</div>
                     <div class="text-[10px] text-gray-400 font-medium">/ Monthly</div>
                 </div>
             </div>

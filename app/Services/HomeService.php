@@ -11,6 +11,7 @@ class HomeService
 {
     public function __construct(
         protected ApartmentService $apartmentService,
+        protected HeroFilterService $heroFilterService,
     ) {
     }
 
@@ -72,6 +73,10 @@ class HomeService
             'homeTestimonials' => $homeTestimonials,
             'homeGalleryImages' => $homeGalleryImages,
             'contactInfo' => $contactInfo,
+            'heroLocations' => $this->heroFilterService->getLocations(),
+            'heroPropertyTypes' => $this->heroFilterService->getPropertyTypes(),
+            'heroBeds' => $this->heroFilterService->getBeds(),
+            'heroFeaturedApartment' => $this->heroFilterService->getFeaturedApartment(),
         ];
     }
 

@@ -20,7 +20,9 @@ class Apartment extends Model
         'description',
         'excerpt',
         'property_type',
+        'hero_filter_property_type_id',
         'bedrooms',
+        'hero_filter_bed_id',
         'bathrooms',
         'area',
         'floor',
@@ -28,6 +30,7 @@ class Apartment extends Model
         'location',
         'address',
         'district',
+        'hero_filter_location_id',
         'latitude',
         'longitude',
         'google_maps_embed',
@@ -119,6 +122,30 @@ class Apartment extends Model
     public function locationTags(): MorphToMany
     {
         return $this->tags()->where('type', 'locations');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function heroFilterLocation(): BelongsTo
+    {
+        return $this->belongsTo(HeroFilterLocation::class, 'hero_filter_location_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function heroFilterPropertyType(): BelongsTo
+    {
+        return $this->belongsTo(HeroFilterPropertyType::class, 'hero_filter_property_type_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function heroFilterBed(): BelongsTo
+    {
+        return $this->belongsTo(HeroFilterBed::class, 'hero_filter_bed_id');
     }
 
     /**
