@@ -2,8 +2,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div class="col-span-1 md:col-span-1">
-                <a class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-6 block flex items-center gap-1" href="#">
-                    <span>PQ</span><span class="text-primary">Rentals</span>
+                <a class="mb-6 block flex items-center" href="{{ route('home') }}">
+                    <img src="{{ asset('assets/images/logo_phuquocapartmentsforrent-1.png') }}" alt="Logo" class="w-auto" style="height: 6rem;">
                 </a>
                 <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
                     The leading apartment rental platform in Phu Quoc. Finding your perfect island home has never been easier.
