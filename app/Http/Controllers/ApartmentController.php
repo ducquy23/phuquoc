@@ -55,6 +55,8 @@ class ApartmentController extends Controller
                     'filters' => $data['filters']
                 ])->render(),
                 'count' => $data['apartments']->total(),
+                'from' => $data['apartments']->firstItem(),
+                'to' => $data['apartments']->lastItem(),
                 'filters' => $filters
             ]);
         }

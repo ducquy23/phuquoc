@@ -37,11 +37,19 @@
             <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">Search Properties</h2>
             @php
                 $total = $apartments->total();
-                $from = $apartments->firstItem() ?? 0;
-                $to = $apartments->lastItem() ?? 0;
+                $from = $apartments->firstItem();
+                $to = $apartments->lastItem();
             @endphp
             <p class="text-slate-500 dark:text-slate-400">
-                {{ $from }} to {{ $to }} out of {{ $total }} {{ Str::plural('property', $total) }}
+                @if($total > 0)
+                    @if($from && $to)
+                        {{ $from }} to {{ $to }} out of {{ $total }} {{ Str::plural('property', $total) }}
+                    @else
+                        {{ $total }} {{ Str::plural('property', $total) }} found
+                    @endif
+                @else
+                    No properties found
+                @endif
             </p>
         </div>
         <div class="flex items-center gap-3 w-full md:w-auto">
@@ -135,10 +143,20 @@
                     // Update count text
                     if (countText && data.count !== undefined) {
                         const total = data.count;
-                        const from = data.apartments?.from || 0;
-                        const to = data.apartments?.to || 0;
-                        const plural = total === 1 ? 'property' : 'properties';
-                        countText.textContent = `${from} to ${to} out of ${total} ${plural}`;
+                        if (total > 0) {
+                            // Try to get from/to from pagination data if available
+                            const from = data.from || 0;
+                            const to = data.to || 0;
+                            if (from && to) {
+                                const plural = total === 1 ? 'property' : 'properties';
+                                countText.textContent = `${from} to ${to} out of ${total} ${plural}`;
+                            } else {
+                                const plural = total === 1 ? 'property' : 'properties';
+                                countText.textContent = `${total} ${plural} found`;
+                            }
+                        } else {
+                            countText.textContent = 'No properties found';
+                        }
                     }
                     
                     // Scroll to top of apartments section smoothly
