@@ -26,6 +26,7 @@ class HomeSettings extends Page implements HasForms
     public function mount(): void
     {
         $this->form->fill([
+            'home_about_avatar' => Option::get('home_about_avatar', ''),
             'home_about_heading' => Option::get('home_about_heading', 'About Me'),
             'home_about_intro' => Option::get('home_about_intro', ''),
             'home_about_details' => Option::get('home_about_details', ''),
@@ -42,6 +43,21 @@ class HomeSettings extends Page implements HasForms
                     ->icon('heroicon-o-user-circle')
                     ->description('Thông tin giới thiệu hiển thị trên trang home')
                     ->schema([
+                        Forms\Components\FileUpload::make('home_about_avatar')
+                            ->label('Avatar Photo')
+                            ->helperText('Ảnh đại diện hiển thị trên trang home (nếu không chọn sẽ dùng avatar từ Contact Settings)')
+                            ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                null,
+                                '1:1',
+                            ])
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->directory('home/about')
+                            ->visibility('public')
+                            ->maxSize(2048)
+                            ->disk('public')
+                            ->columnSpanFull(),
                         Forms\Components\TextInput::make('home_about_heading')
                             ->label('About Heading')
                             ->default('About Me')
@@ -136,6 +152,7 @@ class HomeSettings extends Page implements HasForms
         $data = $this->form->getState();
 
         $options = [
+            'home_about_avatar' => $data['home_about_avatar'] ?? '',
             'home_about_heading' => $data['home_about_heading'] ?? 'About Me',
             'home_about_intro' => $data['home_about_intro'] ?? '',
             'home_about_details' => $data['home_about_details'] ?? '',

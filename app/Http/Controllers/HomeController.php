@@ -6,15 +6,24 @@ use App\Models\Post;
 use App\Models\Apartment;
 use App\Models\Option;
 use App\Services\ApartmentService;
+use Awcodes\Curator\Models\Media;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
 {
+
+    /**
+     * @param ApartmentService $apartmentService
+     */
     public function __construct(
         protected ApartmentService $apartmentService
-    ) {
-    }
+    ) {}
 
-    public function index()
+    /**
+     * @return Factory|View
+     */
+    public function index(): Factory|View
     {
         $latestPosts = Post::where('is_published', true)
             ->with('author')
@@ -31,11 +40,11 @@ class HomeController extends Controller
 
         // Agent / home about options
         $agentPhotoOption = Option::get('contact_agent_photo', '');
-        $agentPhoto = $agentPhotoOption ? asset('storage/' . $agentPhotoOption) : '';
+        $agentPhoto = $this->getAgentPhotoUrl($agentPhotoOption);
 
         $options = [
-            'agent_name' => Option::get('contact_agent_name', 'Vu Van Hai'),
-            'agent_title' => Option::get('contact_agent_title', 'Your friendly neighborhood buddy'),
+            'agent_name' => Option::get('contact_agent_name', ''),
+            'agent_title' => Option::get('contact_agent_title', ''),
             'agent_bio' => Option::get('contact_agent_bio', ''),
             'agent_photo' => $agentPhoto,
         ];
@@ -57,6 +66,38 @@ class HomeController extends Controller
             'homeTestimonials' => $homeTestimonials,
             'homeGalleryImages' => $homeGalleryImages,
         ]);
+    }
+
+    /**
+     *
+     * @param string $photoOption
+     * @return string
+     */
+    private function getAgentPhotoUrl(string $photoOption): string
+    {
+        if (empty($photoOption)) {
+            return asset('assets/images/Image-not-found.png');
+        }
+
+        // If numeric, might be Curator ID
+        if (is_numeric($photoOption)) {
+            try {
+                $media = Media::find((int)$photoOption);
+                if ($media && $media->url) {
+                    return $media->url;
+                }
+            } catch (\Exception $e) {
+            }
+            return asset('assets/images/Image-not-found.png');
+        }
+
+        // If it's already a full URL
+        if (filter_var($photoOption, FILTER_VALIDATE_URL) || str_starts_with($photoOption, 'http')) {
+            return $photoOption;
+        }
+
+        // Otherwise, treat as storage path
+        return asset('storage/' . ltrim($photoOption, '/'));
     }
 }
 

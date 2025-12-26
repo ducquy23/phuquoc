@@ -115,8 +115,7 @@
         <div class="flex flex-col md:flex-row items-center gap-10 md:gap-14">
             <div class="flex-shrink-0">
                 <div class="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl bg-gray-100 dark:bg-gray-800">
-                    <img src="{{ $options['agent_photo'] ?? 'https://cdn.dribbble.com/userupload/29736698/file/original-1ef955c551eede8401da24a210ad3a86.jpg?resize=752x&vertical=center' }}"
-                         alt="{{ $options['agent_name'] ?? 'Hai Nguyen Van' }}" class="w-full h-full object-cover">
+                    <img src="{{ $options['agent_photo'] ?? '' }}" alt="{{ $options['agent_name'] ?? 'Hai Nguyen Van' }}" class="w-full h-full object-cover">
                 </div>
             </div>
             <div class="flex-1 text-center md:text-left">
@@ -203,7 +202,7 @@
                             @endforeach
                         </div>
                     </div>
-                    
+
                     <!-- Navigation Buttons -->
                     <button id="guest-gallery-prev" class="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-800 text-gray-900 dark:text-white rounded-full p-3 shadow-lg backdrop-blur-sm transition-all hover:scale-110 z-10">
                         <span class="material-symbols-outlined">chevron_left</span>
@@ -212,7 +211,7 @@
                         <span class="material-symbols-outlined">chevron_right</span>
                     </button>
                 </div>
-                    
+
                     <!-- Pagination Dots -->
                     <div class="flex justify-center gap-2 mt-6">
                         @foreach($homeGalleryImages as $index => $image)
@@ -472,13 +471,13 @@
         const prevBtn = document.getElementById('guest-gallery-prev');
         const nextBtn = document.getElementById('guest-gallery-next');
         const dots = document.querySelectorAll('.guest-gallery-dot');
-        
+
         if (!track || !prevBtn || !nextBtn) return;
-        
+
         const slides = track.querySelectorAll('div');
         const totalSlides = slides.length;
         let currentIndex = 0;
-        
+
         // Get slide width based on screen size
         function getSlideWidth() {
             const trackWidth = track.offsetWidth;
@@ -493,12 +492,12 @@
                 return trackWidth;
             }
         }
-        
+
         function updateSlider() {
             const slideWidth = getSlideWidth();
             const translateX = -currentIndex * slideWidth;
             track.style.transform = `translateX(${translateX}px)`;
-            
+
             // Update dots
             dots.forEach((dot, index) => {
                 if (index === currentIndex) {
@@ -511,44 +510,44 @@
                 }
             });
         }
-        
+
         function nextSlide() {
             currentIndex = (currentIndex + 1) % totalSlides;
             updateSlider();
         }
-        
+
         function prevSlide() {
             currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
             updateSlider();
         }
-        
+
         function goToSlide(index) {
             currentIndex = index;
             updateSlider();
         }
-        
+
         // Event listeners
         nextBtn.addEventListener('click', nextSlide);
         prevBtn.addEventListener('click', prevSlide);
-        
+
         dots.forEach((dot, index) => {
             dot.addEventListener('click', () => goToSlide(index));
         });
-        
+
         // Auto-play (optional - uncomment if needed)
         // let autoPlayInterval = setInterval(nextSlide, 5000);
         // track.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
         // track.addEventListener('mouseleave', () => {
         //     autoPlayInterval = setInterval(nextSlide, 5000);
         // });
-        
+
         // Handle window resize
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(updateSlider, 250);
         });
-        
+
         // Initialize
         updateSlider();
     })();
