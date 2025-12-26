@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\MediaResource;
 use Awcodes\Curator\CuratorPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -41,7 +42,16 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
-            ->plugin(CuratorPlugin::make())
+            ->plugin(
+                CuratorPlugin::make()
+                    ->label('Media')
+                    ->pluralLabel('Media')
+                    ->navigationIcon('heroicon-o-photo')
+                    ->navigationSort(3)
+                    ->navigationCountBadge()
+                    ->defaultListView('grid')
+                    ->resource(MediaResource::class),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

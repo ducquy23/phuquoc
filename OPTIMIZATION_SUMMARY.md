@@ -126,3 +126,4 @@ After deployment, monitor:
 - Image loading performance
 - Core Web Vitals (LCP, FID, CLS)
 
+

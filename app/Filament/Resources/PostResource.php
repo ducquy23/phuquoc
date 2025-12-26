@@ -105,6 +105,7 @@ class PostResource extends Resource
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->directory('posts')
                                     ->visibility('public')
+                                    ->extraAttributes(['class' => 'custom-curator-picker'])
                                     ->columnSpan(1),
                                 Forms\Components\TextInput::make('og_image_url')
                                     ->label('OG Image URL (Alternative)')

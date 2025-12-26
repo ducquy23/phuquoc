@@ -39,86 +39,12 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Đảm bảo icon được căn phải */
 .curator-picker .curator-thumbnail-container .curator-thumbnail-actions svg {
     width: 16px;
     height: 16px;
 }
 
-.blog-detail-content ol,
-.blog-detail-content ul,
-.blog-detail-content menu {
-    list-style: revert;
-    margin: revert;
-    padding: revert;
-}
-
-.blog-detail-content blockquote,
-.blog-detail-content dl,
-.blog-detail-content dd,
-.blog-detail-content h1,
-.blog-detail-content h2,
-.blog-detail-content h3,
-.blog-detail-content h4,
-.blog-detail-content h5,
-.blog-detail-content h6,
-.blog-detail-content hr,
-.blog-detail-content figure,
-.blog-detail-content p,
-.blog-detail-content pre {
-    margin: revert;
-}
-
-.blog-detail-content h1,
-.blog-detail-content h2,
-.blog-detail-content h3,
-.blog-detail-content h4,
-.blog-detail-content h5,
-.blog-detail-content h6 {
-    font-size: revert;
-    font-weight: revert;
-}
-
 .custom-curator-picker > div > div.absolute {
     right: 0;
     background: #ffffff;
-}
-.fi-tabs{
-    margin-left: 0;
-}
-
-.utilities-grid .fi-fo-checkbox-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.utilities-grid .fi-fo-checkbox-list .fi-fo-checkbox-list-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    background-color: #f9fafb;
-    transition: all 0.2s;
-}
-
-.utilities-grid .fi-fo-checkbox-list .fi-fo-checkbox-list-option:hover {
-    background-color: #f3f4f6;
-    border-color: #d1d5db;
-}
-
-.utilities-grid .fi-fo-checkbox-list .fi-fo-checkbox-list-option input[type="checkbox"]:checked + label {
-    color: #1f2937;
-    font-weight: 500;
-}
-
-.utilities-grid .fi-fo-checkbox-list .fi-fo-checkbox-list-option input[type="checkbox"]:checked {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
-}
-select:not(.choices){
-    background-image: none;
 }
