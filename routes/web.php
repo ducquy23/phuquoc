@@ -11,9 +11,9 @@ use App\Http\Controllers\PageController;
 // Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Apartments (listing + one sample detail page using static view)
+// Apartments (listing + detail pages)
 Route::get('/apartments', [ApartmentController::class, 'index'])->name('apartments.index');
-Route::get('/apartments/sample-detail', [ApartmentController::class, 'show'])->name('apartments.show');
+Route::get('/apartments/{slug}', [ApartmentController::class, 'show'])->name('apartments.show');
 
 // Blog (dynamic listing + detail pages)
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');

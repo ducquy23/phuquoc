@@ -25,6 +25,15 @@ class ContactResource extends Resource
     protected static ?string $label = 'Contact Message';
     protected static ?string $pluralLabel = 'Contact Messages';
 
+    /**
+     * @return string|null
+     */
+    public static function getNavigationBadge(): ?string
+    {
+        $unreadCount = Contact::where('status', 'new')->count();
+        return $unreadCount > 0 ? (string) $unreadCount : null;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

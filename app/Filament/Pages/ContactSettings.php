@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use App\Models\Option;
-use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -26,15 +25,11 @@ class ContactSettings extends Page implements HasForms
 
     public function mount(): void
     {
-        $agentPhoto = Option::get('contact_agent_photo', '');
-        // If it's numeric, it's a Curator ID, otherwise it's a URL
-        $agentPhotoValue = is_numeric($agentPhoto) ? (int)$agentPhoto : $agentPhoto;
-
         $this->form->fill([
             'agent_name' => Option::get('contact_agent_name', 'Vu Van Hai'),
             'agent_title' => Option::get('contact_agent_title', 'Your friendly neighborhood buddy'),
             'agent_bio' => Option::get('contact_agent_bio', ''),
-            'agent_photo' => $agentPhotoValue,
+            'agent_photo' => Option::get('contact_agent_photo', ''),
             'contact_email' => Option::get('contact_email', 'vnha231@gmail.com'),
             'contact_phone' => Option::get('contact_phone', '+84 9024 07024'),
             'contact_location' => Option::get('contact_location', 'Sunset Town, Phu Quoc, Vietnam'),
@@ -70,12 +65,22 @@ class ContactSettings extends Page implements HasForms
                             ->rows(4)
                             ->placeholder('Enter agent bio/description...')
                             ->columnSpanFull(),
-                        CuratorPicker::make('agent_photo')
+                        Forms\Components\FileUpload::make('agent_photo')
                             ->label('Agent Photo')
-                            ->helperText('Select or upload agent photo from media library')
+                            ->helperText('Upload agent photo (JPG, PNG, WebP, GIF)')
+                            ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                null,
+                                '1:1',
+                                '4:3',
+                                '16:9',
+                            ])
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->directory('contact')
+                            ->directory('contact/agent')
                             ->visibility('public')
+                            ->maxSize(2048) // 2MB
+                            ->disk('public')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -162,11 +167,8 @@ class ContactSettings extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        // Handle agent_photo: CuratorPicker returns ID (int) or null
+        // Handle agent_photo: FileUpload returns file path/URL
         $agentPhoto = $data['agent_photo'] ?? '';
-        if (is_numeric($agentPhoto)) {
-            $agentPhoto = (string)$agentPhoto; // Store as string ID
-        }
 
         $options = [
             'contact_agent_name' => $data['agent_name'] ?? '',

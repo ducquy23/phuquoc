@@ -2,6 +2,21 @@
 
 @section('title', 'Phu Quoc Apartment Rentals')
 
+@push('styles')
+    <style>
+        /* Hide native select arrow for custom filter dropdowns on home hero */
+        .home-filter-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: none;
+        }
+        .home-filter-select::-ms-expand {
+            display: none;
+        }
+    </style>
+@endpush
+
 @section('content')
 <section class="relative min-h-[90vh] flex flex-col pt-32 pb-20 overflow-hidden">
     <div class="absolute inset-0 z-0">
@@ -29,7 +44,7 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="relative group">
-                        <select class="w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
+                        <select class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
                             <option>All Main Locations</option>
                             <option>Sunset Town</option>
                             <option>An Thoi</option>
@@ -38,7 +53,7 @@
                         <span class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                     </div>
                     <div class="relative group">
-                        <select class="w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
+                        <select class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
                             <option>All Types</option>
                             <option>Studio</option>
                             <option>1 Bedroom</option>
@@ -47,7 +62,7 @@
                         <span class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                     </div>
                     <div class="relative group">
-                        <select class="w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
+                        <select class="home-filter-select w-full pl-4 pr-10 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-primary focus:border-primary appearance-none cursor-pointer hover:border-primary/50 transition-colors">
                             <option>All Beds</option>
                             <option>1 Bed</option>
                             <option>2 Beds</option>
@@ -95,21 +110,118 @@
         </div>
     </div>
 </section>
-<section class="pt-32 pb-20 bg-white dark:bg-gray-800 transition-colors duration-300">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="inline-flex items-center justify-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl mb-6 shadow-sm">
-            <span class="material-symbols-outlined text-primary text-4xl">apartment</span>
+<section class="pt-32 pb-24 bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center gap-10 md:gap-14">
+            <div class="flex-shrink-0">
+                <div class="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl bg-gray-100 dark:bg-gray-800">
+                    <img src="{{ $options['agent_photo'] ?? 'https://cdn.dribbble.com/userupload/29736698/file/original-1ef955c551eede8401da24a210ad3a86.jpg?resize=752x&vertical=center' }}"
+                         alt="{{ $options['agent_name'] ?? 'Hai Nguyen Van' }}" class="w-full h-full object-cover">
+                </div>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <p class="text-sm font-semibold text-primary mb-2">{{ $options['agent_title'] ?? 'Your friendly neighborhood buddy' }}</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white flex items-center justify-center md:justify-start gap-2 mb-2">
+                    {{ $options['agent_name'] ?? 'Hai Nguyen Van' }}
+                    <span class="material-symbols-outlined text-primary text-2xl align-middle">verified</span>
+                </h2>
+                <p class="text-sm uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500 mb-4">{{ $homeAboutHeading ?? 'About Me' }}</p>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    {{ $homeAboutIntro ?: "As a local of Phu Quoc with over 6 years in real estate, I understand the local market and my clients' needs.
+                    My experience in cities like Ho Chi Minh City has informed my perspective on investment trends and long-term living." }}
+                </p>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                    {{ $homeAboutDetails ?: "I manage several rental apartments with hundreds of positive Airbnb reviews, giving me insights into what truly makes
+                    guests feel at home. With my local network, I'm committed to helping you find a place that fits your lifestyle and budget." }}
+                </p>
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                    <a href="#contact"
+                       class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary hover:bg-secondary text-white font-semibold shadow-lg shadow-primary/30 transition-all">
+                        <span class="material-symbols-outlined text-base mr-2">call</span>
+                        Contact Hai Now
+                    </a>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs">
+                        Available via Zalo, WhatsApp and Email. Happy to support you in English or Vietnamese.
+                    </p>
+                </div>
+            </div>
         </div>
-        <p class="text-xs font-bold tracking-[0.2em] text-gray-400 dark:text-gray-500 uppercase mb-3">Your Gateway to Phu Quoc Rentals</p>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-8">Welcome To Phu Quoc Apartment For Rent</h2>
-        <div class="w-20 h-1.5 bg-primary mx-auto mb-10 rounded-full"></div>
-        <div class="prose prose-lg dark:prose-invert mx-auto text-gray-600 dark:text-gray-300 leading-relaxed">
-            <p class="mb-6">
-                Your trusted partner for finding the perfect Phu Quoc apartment for rent long term at affordable prices! We specialize in budget-friendly Phu Quoc apartments for rent long term, offering a variety of properties from luxurious villas to cozy hotels, with options for short-term stays also available to suit your needs.
-            </p>
-            <p>
-                Our friendly team is dedicated to enhancing your Phu Quoc experience with insider tips on the best attractions. Explore the island with ease using our affordable motorbike rental service, perfect for both extended stays in a Phu Quoc apartment for rent long term and shorter visits.
-            </p>
+
+        <!-- Testimonials -->
+        <div class="mt-20">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+                <div>
+                    <p class="text-xs font-bold tracking-[0.25em] text-gray-400 dark:text-gray-500 uppercase mb-2">Customer love us!</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Real stories from happy guests</h3>
+                </div>
+            </div>
+            @if(!empty($homeTestimonials))
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($homeTestimonials as $testimonial)
+                    <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm p-6 flex flex-col justify-between">
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                            {{ $testimonial['content'] ?? '' }}
+                        </p>
+                        <div class="flex items-center gap-3 mt-2">
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+                                @php
+                                    $avatarPath = $testimonial['avatar'] ?? null;
+                                    $avatarUrl = $avatarPath ? asset('storage/' . $avatarPath) : 'https://phuquocapartmentsforrent.com/wp-content/uploads/2025/03/z6387435064875_00ac1ab1892acdb397433a27ce3d169b.jpg';
+                                @endphp
+                                <img src="{{ $avatarUrl }}" alt="{{ $testimonial['name'] ?? 'Guest' }}" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $testimonial['name'] ?? '' }}</p>
+                                @if(!empty($testimonial['role']))
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $testimonial['role'] }}</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @endif
+
+            <!-- Photo Gallery Slider -->
+            @if(!empty($homeGalleryImages))
+            <div class="mt-16">
+                <div class="relative px-8 md:px-12">
+                    <!-- Slider Container -->
+                    <div id="guest-gallery-slider" class="relative overflow-hidden rounded-2xl">
+                        <div id="guest-gallery-track" class="flex gap-4 transition-transform duration-500 ease-in-out" style="transform: translateX(0);">
+                            @foreach($homeGalleryImages as $image)
+                                @php
+                                    $imagePath = $image['image'] ?? null;
+                                    $src = $imagePath ? asset('storage/' . $imagePath) : null;
+                                    $alt = $image['alt'] ?? 'Guest photo';
+                                @endphp
+                                @if($src)
+                                    <div class="min-w-full md:min-w-[48%] lg:min-w-[32%] h-72 md:h-80 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                                        <img src="{{ $src }}" alt="{{ $alt }}" class="w-full h-full object-cover">
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <button id="guest-gallery-prev" class="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-800 text-gray-900 dark:text-white rounded-full p-3 shadow-lg backdrop-blur-sm transition-all hover:scale-110 z-10">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button id="guest-gallery-next" class="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-800 text-gray-900 dark:text-white rounded-full p-3 shadow-lg backdrop-blur-sm transition-all hover:scale-110 z-10">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+                    
+                    <!-- Pagination Dots -->
+                    <div class="flex justify-center gap-2 mt-6">
+                        @foreach($homeGalleryImages as $index => $image)
+                            <button class="guest-gallery-dot w-2 h-2 rounded-full {{ $index === 0 ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600' }} transition-all" data-index="{{ $index }}"></button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </section>
@@ -120,144 +232,77 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Discover Latest Apartments</h2>
                 <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Newest Apartments in Phu Quoc</p>
             </div>
-            <a class="inline-flex items-center text-primary font-bold hover:text-secondary transition-colors group" href="#">
+            <a class="inline-flex items-center text-primary font-bold hover:text-secondary transition-colors group" href="{{ route('apartments.index') }}">
                 View All Properties <span class="material-symbols-outlined ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </a>
         </div>
+        @if(isset($apartments) && $apartments->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-white dark:bg-surface-dark rounded-3xl shadow-card hover:shadow-float transition-all duration-300 group border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col">
+            @foreach($apartments as $apartment)
+            <a href="{{ route('apartments.show', $apartment->slug) }}" class="bg-white dark:bg-surface-dark rounded-3xl shadow-card hover:shadow-float transition-all duration-300 group border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col">
                 <div class="relative h-72 overflow-hidden">
-                    <img alt="Apartment 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi3c4a6_DCSMQ_01ARy4f04Ds5s1zG5A_u-KDrIExTuFuOcfR3b-MW7ioVwhM7p8Llg_RyJP1EbeDF47HZDrJsOmKTnre7cxrMQjS5dkeId77QQh-ehTJ8Iz_y8mqdivOqOV1x0r0oBPtGtEPxHTjO9IjE_kqXPdnoLpKj4vYZzexz4ON6ADeJIjtleXOQd9KdEs_JEhabEHN7iEyqrfA92GpxtHHzyvAFexrxJX8ThhBrMCo7Qv33IAnH-PXf_6m4Q_EOAhsFjbp-"/>
+                    <img alt="{{ $apartment->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="{{ $apartment->featured_image_url }}"/>
                     <div class="absolute top-4 left-4 flex gap-2">
-                        <span class="bg-white/95 dark:bg-gray-900/95 text-gray-800 dark:text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm">Available</span>
+                        @if($apartment->status === 'available')
+                        <span class="bg-white/95 dark:bg-gray-900/95 text-gray-800 dark:text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm">{{ $apartment->status_badge_text }}</span>
+                        @endif
+                        @if($apartment->is_featured)
                         <span class="bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">Featured</span>
-                        <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">Trendy</span>
+                        @endif
                     </div>
+                    @php
+                        $galleryImages = $apartment->gallery_image_urls;
+                        $totalImages = count($galleryImages) + 1; // +1 for featured image
+                    @endphp
+                    @if($totalImages > 0)
                     <div class="absolute top-4 right-4 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-lg flex items-center backdrop-blur-sm">
-                        <span class="material-symbols-outlined text-sm mr-1">photo_camera</span> 9
+                        <span class="material-symbols-outlined text-sm mr-1">photo_camera</span> {{ $totalImages }}
                     </div>
-                    <button class="absolute bottom-4 right-4 p-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-lg hover:scale-110 transform duration-200">
+                    @endif
+                    <button class="absolute bottom-4 right-4 p-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-lg hover:scale-110 transform duration-200" onclick="event.preventDefault();">
                         <span class="material-symbols-outlined text-xl">favorite</span>
                     </button>
                 </div>
                 <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">18th Floor Sunset Town Phu Quoc | One Bedroom Apartment | Sea + Firework View</h3>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight group-hover:text-primary transition-colors">{{ $apartment->title }}</h3>
                     <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-5">
                         <span class="material-symbols-outlined text-sm mr-1 text-primary">location_on</span>
-                        22H9+XVH, An Thoi, Phu Quoc, Kien Giang 92000
+                        {{ $apartment->address ?: ($apartment->location ?: $apartment->district) }}
                     </div>
                     <div class="mt-auto border-t border-gray-100 dark:border-gray-700 pt-5 flex items-center justify-between">
                         <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5">Apartment</p>
-                            <p class="text-xl font-extrabold text-gray-900 dark:text-white">$732 <span class="text-xs font-medium text-gray-500">/ Monthly</span></p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5">{{ $apartment->property_type_display }}</p>
+                            <p class="text-xl font-extrabold text-gray-900 dark:text-white">{{ $apartment->formatted_price_monthly }} <span class="text-xs font-medium text-gray-500">/ Monthly</span></p>
                         </div>
                         <div class="flex gap-4">
                             <div class="text-center">
                                 <span class="material-symbols-outlined text-gray-400 text-xl mb-1">bed</span>
-                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">1</p>
+                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ $apartment->bedrooms_display }}</p>
                             </div>
+                            @if($apartment->area)
                             <div class="text-center">
                                 <span class="material-symbols-outlined text-gray-400 text-xl mb-1">square_foot</span>
-                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">50 m²</p>
+                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ number_format($apartment->area) }} m²</p>
                             </div>
+                            @endif
                         </div>
                     </div>
-                    <p class="text-[10px] text-gray-400 mt-4 font-medium">Added: June 13, 2022</p>
+                    @if($apartment->published_at)
+                    <p class="text-[10px] text-gray-400 mt-4 font-medium">Added: {{ $apartment->published_at->format('M d, Y') }}</p>
+                    @endif
                 </div>
-            </div>
-            <div class="bg-white dark:bg-surface-dark rounded-3xl shadow-card hover:shadow-float transition-all duration-300 group border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col">
-                <div class="relative h-72 overflow-hidden">
-                    <img alt="Apartment 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ2cwt6p-HFtL58uQwx6BXv5bwDp6vZ6Cscnuc84Trt64rYdLRXXaqMYavaCjnKcfHdTOiPbJQPxmm824eBvwd39tqGoorHvp-CCpbc4WI-wEZgbc2TDUFCje3yEL8IYZCOU-krX9FFSjFdpx0qFvxITPe3dx3L5B9PsL33i_0wYqZEhH5Qfmp63A91fCpBTpmLwgjSC36JwQ2StQTFtwmTjH_pcW6eXmvFHvIbuv60eKNBnIFKDCGCjV_q6Rvh9nQkfpPpcB__YzO"/>
-                    <div class="absolute top-4 left-4 flex gap-2">
-                        <span class="bg-white/95 dark:bg-gray-900/95 text-gray-800 dark:text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm">Available</span>
-                        <span class="bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">Featured</span>
-                    </div>
-                    <div class="absolute top-4 right-4 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-lg flex items-center backdrop-blur-sm">
-                        <span class="material-symbols-outlined text-sm mr-1">photo_camera</span> 5
-                    </div>
-                    <button class="absolute bottom-4 right-4 p-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-lg hover:scale-110 transform duration-200">
-                        <span class="material-symbols-outlined text-xl">favorite</span>
-                    </button>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">Sunset Town Phu Quoc | Studio Apartment | Sea + Firework View</h3>
-                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-5">
-                        <span class="material-symbols-outlined text-sm mr-1 text-primary">location_on</span>
-                        22H9+XVH, An Thoi, Phu Quoc, Kien Giang 92000
-                    </div>
-                    <div class="mt-auto border-t border-gray-100 dark:border-gray-700 pt-5 flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5">Apartment</p>
-                            <p class="text-xl font-extrabold text-gray-900 dark:text-white">$481 <span class="text-xs font-medium text-gray-500">/ Monthly</span></p>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="text-center">
-                                <span class="material-symbols-outlined text-gray-400 text-xl mb-1">bed</span>
-                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">1</p>
-                            </div>
-                            <div class="text-center">
-                                <span class="material-symbols-outlined text-gray-400 text-xl mb-1">square_foot</span>
-                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">28 m²</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-gray-400 mt-4 font-medium">Added: May 28, 2022</p>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-surface-dark rounded-3xl shadow-card hover:shadow-float transition-all duration-300 group border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col">
-                <div class="relative h-72 overflow-hidden">
-                    <img alt="Apartment 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjjFglknGtRJJR-Srw8oLJw60VYEBP8UOxa15onSmh4n84rwbKkbGmkKbEHZ15S0lCrIL05ELXKWeZZj7fiW7PNtTJRBXk2-7cuimRgB2IuFTxbwue2-9WF8zGT4LaptWhZ8mvVVo_wVTv-D9n8HkbzMTRZ6EwjAe7j8yPyNOUa8sjCY8oUuM_WsTQ_ufDvZyyy2pSnvPuJQngdVlWGCRgpSr1TvBAc0TpdfqD3E45EE-kQquH8FIQ0CxVpa8-6AruNlEz2dzs8nJO"/>
-                    <div class="absolute top-4 left-4 flex gap-2">
-                        <span class="bg-white/95 dark:bg-gray-900/95 text-gray-800 dark:text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm">Available</span>
-                        <span class="bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">Featured</span>
-                    </div>
-                    <div class="absolute top-4 right-4 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-lg flex items-center backdrop-blur-sm">
-                        <span class="material-symbols-outlined text-sm mr-1">photo_camera</span> 12
-                    </div>
-                    <button class="absolute bottom-4 right-4 p-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-lg hover:scale-110 transform duration-200">
-                        <span class="material-symbols-outlined text-xl">favorite</span>
-                    </button>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">Sunset Town Phu Quoc | Three Bedroom Apartment | Sea + City View</h3>
-                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-5">
-                        <span class="material-symbols-outlined text-sm mr-1 text-primary">location_on</span>
-                        22H9+XVH, An Thoi, Phu Quoc, Kien Giang 92000
-                    </div>
-                    <div class="mt-auto border-t border-gray-100 dark:border-gray-700 pt-5 flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5">Apartment</p>
-                            <p class="text-xl font-extrabold text-gray-900 dark:text-white">$1,080 <span class="text-xs font-medium text-gray-500">/ Monthly</span></p>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="text-center">
-                                <span class="material-symbols-outlined text-gray-400 text-xl mb-1">bed</span>
-                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">3</p>
-                            </div>
-                            <div class="text-center">
-                                <span class="material-symbols-outlined text-gray-400 text-xl mb-1">square_foot</span>
-                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">92 m²</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-gray-400 mt-4 font-medium">Added: May 28, 2022</p>
-                </div>
-            </div>
+            </a>
+            @endforeach
         </div>
-        <div class="mt-16 flex justify-center items-center gap-4">
-            <button class="w-10 h-10 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-secondary transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
-            <div class="flex gap-2">
-                <button class="w-2.5 h-2.5 rounded-full bg-primary"></button>
-                <button class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-primary transition-colors"></button>
-                <button class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-primary transition-colors"></button>
-                <button class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-primary transition-colors"></button>
-            </div>
-            <button class="w-10 h-10 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-secondary transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+        @else
+        <div class="text-center py-16">
+            <p class="text-lg text-gray-600 dark:text-gray-400">No apartments available at the moment.</p>
         </div>
+        @endif
         <div class="mt-8 text-center">
-            <button class="bg-primary hover:bg-secondary text-white font-bold py-3 px-10 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5">
+            <a href="{{ route('apartments.index') }}" class="inline-block bg-primary hover:bg-secondary text-white font-bold py-3 px-10 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5">
                 View All
-            </button>
+            </a>
         </div>
     </div>
 </section>
@@ -418,3 +463,94 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+    // Guest Gallery Slider
+    (function() {
+        const track = document.getElementById('guest-gallery-track');
+        const prevBtn = document.getElementById('guest-gallery-prev');
+        const nextBtn = document.getElementById('guest-gallery-next');
+        const dots = document.querySelectorAll('.guest-gallery-dot');
+        
+        if (!track || !prevBtn || !nextBtn) return;
+        
+        const slides = track.querySelectorAll('div');
+        const totalSlides = slides.length;
+        let currentIndex = 0;
+        
+        // Get slide width based on screen size
+        function getSlideWidth() {
+            const trackWidth = track.offsetWidth;
+            if (window.innerWidth >= 1024) {
+                // lg: 32% + gap
+                return (trackWidth / 3) + 16; // 32% + gap
+            } else if (window.innerWidth >= 768) {
+                // md: 48% + gap
+                return (trackWidth / 2) + 16; // 48% + gap
+            } else {
+                // mobile: 100%
+                return trackWidth;
+            }
+        }
+        
+        function updateSlider() {
+            const slideWidth = getSlideWidth();
+            const translateX = -currentIndex * slideWidth;
+            track.style.transform = `translateX(${translateX}px)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.remove('bg-gray-300', 'dark:bg-gray-600');
+                    dot.classList.add('bg-primary');
+                    dot.classList.add('w-8'); // Make active dot wider
+                } else {
+                    dot.classList.remove('bg-primary', 'w-8');
+                    dot.classList.add('bg-gray-300', 'dark:bg-gray-600');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateSlider();
+        }
+        
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            updateSlider();
+        }
+        
+        function goToSlide(index) {
+            currentIndex = index;
+            updateSlider();
+        }
+        
+        // Event listeners
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+        
+        // Auto-play (optional - uncomment if needed)
+        // let autoPlayInterval = setInterval(nextSlide, 5000);
+        // track.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+        // track.addEventListener('mouseleave', () => {
+        //     autoPlayInterval = setInterval(nextSlide, 5000);
+        // });
+        
+        // Handle window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updateSlider, 250);
+        });
+        
+        // Initialize
+        updateSlider();
+    })();
+</script>
+@endpush

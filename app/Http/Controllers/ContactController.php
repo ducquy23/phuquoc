@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
+use App\Services\ContactService;
 use Awcodes\Curator\Models\Media;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 use App\Models\Option;
 
 class ContactController extends Controller
 {
+    protected ContactService $contactService;
+
+    /**
+     * @param ContactService $contactService
+     */
+    public function __construct(ContactService $contactService)
+    {
+        $this->contactService = $contactService;
+    }
 
     /**
      * @return Factory|View
@@ -55,7 +64,6 @@ class ContactController extends Controller
             return asset('assets/images/Image-not-found.png');
         }
 
-        // If it's numeric, it's a Curator ID
         if (is_numeric($photoOption)) {
             try {
                 $media = Media::find((int)$photoOption);
@@ -63,22 +71,20 @@ class ContactController extends Controller
                     return $media->url;
                 }
             } catch (\Exception $e) {
-                // Fallback to default if error
             }
             return asset('assets/images/Image-not-found.png');
         }
 
-        // Otherwise, it's a direct URL
         return $photoOption;
     }
 
     /**
      * @param Request $request
-     * @return RedirectResponse
+     * @return RedirectResponse|JsonResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:255',
@@ -87,39 +93,42 @@ class ContactController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            
             return back()
-                ->withErrors($validator)
+                ->withErrors($validator->errors())
                 ->withInput();
         }
 
-        $contact = Contact::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone ?? null,
-            'subject' => $request->interest ?? 'General Inquiry',
-            'message' => $request->message,
-            'inquiry_type' => $this->mapInterestToInquiryType($request->interest),
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'status' => 'new',
-        ]);
+        $result = $this->contactService->storeContact($request);
+
+        if ($result === 'Validation failed') {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $request->validator->errors() ?? []
+                ], 422);
+            }
+            
+            return back()
+                ->withErrors($request->validator->errors())
+                ->withInput();
+        }
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you for contacting us! We will get back to you soon.'
+            ], 200);
+        }
 
         return back()->with('success', 'Thank you for contacting us! We will get back to you soon.');
     }
-
-    /**
-     * @param string|null $interest
-     * @return string
-     */
-    private function mapInterestToInquiryType(?string $interest): string
-    {
-        return match($interest) {
-            'Long-term Rental Apartment' => 'long_term',
-            'Short-term Holiday Stay' => 'short_term',
-            'Motorbike Rental' => 'motorbike',
-            default => 'general',
-        };
-    }
 }
-
-

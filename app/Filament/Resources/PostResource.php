@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
+use App\Forms\Components\CKEditor;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -79,23 +80,9 @@ class PostResource extends Resource
                         Forms\Components\Tabs\Tab::make('Content')
                             ->icon('heroicon-o-document-text')
                             ->schema([
-                                Forms\Components\RichEditor::make('content')
-                                    ->label('Content')
-                                    ->toolbarButtons([
-                                        'attachFiles',
-                                        'blockquote',
-                                        'bold',
-                                        'bulletList',
-                                        'codeBlock',
-                                        'heading',
-                                        'italic',
-                                        'link',
-                                        'orderedList',
-                                        'redo',
-                                        'strike',
-                                        'underline',
-                                        'undo',
-                                    ])
+                                CKEditor::make('content')
+                                    ->label('Nội dung')
+                                    ->required()
                                     ->columnSpanFull(),
                             ]),
 
@@ -210,20 +197,20 @@ class PostResource extends Resource
                     ->getStateUsing(function ($record, $livewire) {
                         // Get the table records collection
                         $records = $livewire->getTableRecords();
-                        
+
                         // Find the index of current record in the collection
                         $index = $records->search(function ($item) use ($record) {
                             return $item->id === $record->id;
                         });
-                        
+
                         if ($index === false) {
                             return '';
                         }
-                        
+
                         // Get pagination info
                         $currentPage = $records->currentPage() ?? 1;
                         $perPage = $records->perPage() ?? 10;
-                        
+
                         // Calculate sequential number: (page - 1) * perPage + index + 1
                         return ($currentPage - 1) * $perPage + $index + 1;
                     })

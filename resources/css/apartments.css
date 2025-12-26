@@ -1,0 +1,103 @@
+/* Custom scrollbar for thumbnails */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Gallery thumb overlay */
+.detail-section__gallery-thumb_overlay {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.detail-section__gallery-thumb_overlay-text {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Lightbox thumbnails scrollbar */
+#lightbox-thumbnails::-webkit-scrollbar {
+    height: 6px;
+}
+
+#lightbox-thumbnails::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+#lightbox-thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+#lightbox-thumbnails::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Google Maps Embed */
+.bg-gray-200 iframe,
+.bg-gray-800 iframe,
+.rounded-xl iframe {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    border: 0 !important;
+    border-radius: 0.75rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+}
+
+/* Tabs Navigation */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-nav-btn {
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-nav-btn.active {
+    color: rgb(14, 165, 233);
+    border-bottom-color: rgb(14, 165, 233);
+}
+
+.tab-nav-btn:not(.active):hover {
+    color: rgb(14, 165, 233);
+    background-color: rgba(14, 165, 233, 0.05);
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.scroll-mt-24 {
+    scroll-margin-top: 6rem;
+}
+

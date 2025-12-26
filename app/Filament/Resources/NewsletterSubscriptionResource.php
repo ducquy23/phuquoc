@@ -23,6 +23,15 @@ class NewsletterSubscriptionResource extends Resource
     protected static ?string $label = 'Newsletter Subscription';
     protected static ?string $pluralLabel = 'Newsletter Subscriptions';
 
+    /**
+     * @return string|null
+     */
+    public static function getNavigationBadge(): ?string
+    {
+        $activeCount = NewsletterSubscription::where('status', 'active')->count();
+        return $activeCount > 0 ? (string) $activeCount : null;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
