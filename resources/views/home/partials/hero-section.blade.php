@@ -25,11 +25,15 @@
                     </div>
                     <div class="flex bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full w-full md:w-auto shrink-0">
                         <button
-                            class="flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold bg-primary text-white shadow-sm transition-all">
+                            id="status-filter-all"
+                            data-status="all"
+                            class="status-filter-btn flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold bg-primary text-white shadow-sm transition-all">
                             All
                         </button>
                         <button
-                            class="flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                            id="status-filter-available"
+                            data-status="available"
+                            class="status-filter-btn flex-1 md:flex-none px-8 py-2 rounded-full text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-white transition-colors">
                             Available
                         </button>
                     </div>

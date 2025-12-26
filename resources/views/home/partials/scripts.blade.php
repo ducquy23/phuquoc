@@ -117,6 +117,32 @@
         }, 5000);
     }
 
+    // Status Filter Buttons (All/Available)
+    (function() {
+        const statusFilterButtons = document.querySelectorAll('.status-filter-btn');
+        
+        if (statusFilterButtons.length > 0) {
+            statusFilterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active state from all buttons
+                    statusFilterButtons.forEach(btn => {
+                        btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                        btn.classList.add('text-gray-500', 'dark:text-gray-400');
+                    });
+                    
+                    // Add active state to clicked button
+                    this.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    this.classList.add('bg-primary', 'text-white', 'shadow-sm');
+                    
+                    // Get the status value from data attribute
+                    const status = this.getAttribute('data-status');
+                    console.log('Selected status:', status);
+                    // You can add filtering logic here if needed
+                });
+            });
+        }
+    })();
+
     // Hero Search - Advance Search Toggle
     (function() {
         const advanceSearchToggle = document.getElementById('advance-search-toggle');
