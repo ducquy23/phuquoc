@@ -71,9 +71,10 @@ class HomeService
             ->selectRaw('MIN(price_monthly) as min_price, MAX(price_monthly) as max_price')
             ->first();
 
-        // Get published motorbikes
+        // Get published motorbikes with featured image
         $motorbikes = Motorbike::published()
             ->available()
+            ->with('featuredImage')
             ->ordered()
             ->get();
 

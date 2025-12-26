@@ -16,7 +16,8 @@
                     <img alt="{{ $motorbike->name }}"
                          class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500"
                          src="{{ $motorbike->featured_image_url }}"
-                         onerror="this.src='{{ asset('images/placeholder-motorbike.jpg') }}'"/>
+                         onerror="this.src='{{ asset('assets/images/Image-not-found.png') }}'"
+                    />
                 </div>
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1">{{ $motorbike->name }}</h3>
                 <p class="text-xs font-medium text-gray-500 mb-4 uppercase tracking-wide">

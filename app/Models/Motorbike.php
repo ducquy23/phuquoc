@@ -51,10 +51,20 @@ class Motorbike extends Model
      */
     public function getFeaturedImageUrlAttribute(): string
     {
-        if ($this->featuredImage) {
-            return $this->featuredImage->path;
+        // Try to get from Curator media
+        if ($this->featured_image_id) {
+            try {
+                $media = Media::find($this->featured_image_id);
+                if ($media && $media->url) {
+                    return $media->url;
+                }
+            } catch (\Exception $e) {
+                // Silently fail and return fallback
+            }
         }
-        return asset('images/placeholder-motorbike.jpg');
+
+        // Fallback to default image
+        return asset('assets/images/Image-not-found.png');
     }
 
     /**
