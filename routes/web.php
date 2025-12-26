@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\MotorbikeController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\PageController;
 
@@ -17,6 +18,10 @@ Route::get('/search', [ApartmentController::class, 'search'])->name('search');
 // Apartments (listing + detail pages)
 Route::get('/apartments', [ApartmentController::class, 'index'])->name('apartments.index');
 Route::get('/apartments/{slug}', [ApartmentController::class, 'show'])->name('apartments.show');
+
+// Motorbikes (listing + detail pages)
+Route::get('/motorbikes', [MotorbikeController::class, 'index'])->name('motorbikes.index');
+Route::get('/motorbikes/{slug}', [MotorbikeController::class, 'show'])->name('motorbikes.show');
 
 // Blog (dynamic listing + detail pages)
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
