@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PostSeeder::class,
             ApartmentSeeder::class,
+            MotorbikeSeeder::class,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Apartment;
+use App\Models\Motorbike;
 use App\Models\Option;
 use App\Models\Post;
 use Awcodes\Curator\Models\Media;
@@ -70,9 +71,16 @@ class HomeService
             ->selectRaw('MIN(price_monthly) as min_price, MAX(price_monthly) as max_price')
             ->first();
 
+        // Get published motorbikes
+        $motorbikes = Motorbike::published()
+            ->available()
+            ->ordered()
+            ->get();
+
         return [
             'latestPosts' => $latestPosts,
             'apartments' => $apartments,
+            'motorbikes' => $motorbikes,
             'options' => $options,
             'homeAboutHeading' => $homeAboutHeading,
             'homeAboutIntro' => $homeAboutIntro,
