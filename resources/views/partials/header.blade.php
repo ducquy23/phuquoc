@@ -23,10 +23,66 @@
                 </button>
             </div>
             <div class="md:hidden flex items-center">
-                <button class="text-gray-600 dark:text-gray-300 p-2">
-                    <span class="material-symbols-outlined">menu</span>
+                <button id="mobile-menu-toggle" class="text-gray-600 dark:text-gray-300 p-2" onclick="toggleMobileMenu()">
+                    <span id="mobile-menu-icon" class="material-symbols-outlined">menu</span>
                 </button>
             </div>
         </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <nav class="flex flex-col space-y-2 mt-2">
+                <a class="{{ request()->routeIs('home') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-4 py-2.5 rounded-lg transition-all font-medium" href="{{ route('home') }}" onclick="closeMobileMenu()">Home</a>
+                <a class="{{ request()->routeIs('apartments.*') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-4 py-2.5 rounded-lg transition-all font-medium" href="{{ route('apartments.index') }}" onclick="closeMobileMenu()">Apartments</a>
+                <a class="{{ request()->routeIs('blog.*') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-4 py-2.5 rounded-lg transition-all font-medium" href="{{ route('blog.index') }}" onclick="closeMobileMenu()">Blog</a>
+                <a class="{{ request()->routeIs('contact') ? 'text-primary font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary' }} px-4 py-2.5 rounded-lg transition-all font-medium" href="{{ route('contact') }}" onclick="closeMobileMenu()">Contact</a>
+                <div class="pt-2 border-t border-gray-200 dark:border-gray-700 mt-2">
+                    <a class="inline-flex items-center justify-center w-full px-4 py-2.5 border border-transparent text-sm font-bold rounded-lg text-white bg-primary hover:bg-secondary shadow-lg shadow-primary/25 transition-all" href="tel:+84902607024">
+                        <span class="material-symbols-outlined text-sm mr-2 fill-current">call</span>
+                        +84 902-607-024
+                    </a>
+                </div>
+                <div class="pt-2">
+                    <button class="w-full flex items-center justify-center px-4 py-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+                        <span class="material-symbols-outlined text-lg mr-2">dark_mode</span>
+                        <span class="text-sm font-medium">Toggle Dark Mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
     </div>
 </header>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('mobile-menu-icon');
+        
+        if (menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+            icon.textContent = 'close';
+        } else {
+            menu.classList.add('hidden');
+            icon.textContent = 'menu';
+        }
+    }
+    
+    function closeMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('mobile-menu-icon');
+        menu.classList.add('hidden');
+        icon.textContent = 'menu';
+    }
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('mobile-menu');
+        const toggle = document.getElementById('mobile-menu-toggle');
+        
+        if (menu && toggle && !menu.contains(event.target) && !toggle.contains(event.target)) {
+            if (!menu.classList.contains('hidden')) {
+                closeMobileMenu();
+            }
+        }
+    });
+</script>
