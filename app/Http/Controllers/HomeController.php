@@ -39,12 +39,15 @@ class HomeController extends Controller
             ->get();
 
         // Agent / home about options
+        $homeAvatarOption = Option::get('home_about_avatar', '');
         $agentPhotoOption = Option::get('contact_agent_photo', '');
-        $agentPhoto = $this->getAgentPhotoUrl($agentPhotoOption);
+
+        $avatarOption = !empty($homeAvatarOption) ? $homeAvatarOption : $agentPhotoOption;
+        $agentPhoto = $this->getAgentPhotoUrl($avatarOption);
 
         $options = [
-            'agent_name' => Option::get('contact_agent_name', ''),
-            'agent_title' => Option::get('contact_agent_title', ''),
+            'agent_name' => Option::get('contact_agent_name', 'Vu Van Hai'),
+            'agent_title' => Option::get('contact_agent_title', 'Your friendly neighborhood buddy'),
             'agent_bio' => Option::get('contact_agent_bio', ''),
             'agent_photo' => $agentPhoto,
         ];
@@ -96,8 +99,17 @@ class HomeController extends Controller
             return $photoOption;
         }
 
-        // Otherwise, treat as storage path
-        return asset('storage/' . ltrim($photoOption, '/'));
+        // Check if path already starts with 'storage/' or 'public/'
+        $path = ltrim($photoOption, '/');
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+        if (str_starts_with($path, 'public/')) {
+            return asset(str_replace('public/', 'storage/', $path));
+        }
+
+        // Otherwise, treat as storage path (relative to storage/app/public)
+        return asset('storage/' . $path);
     }
 }
 
