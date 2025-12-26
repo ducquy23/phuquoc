@@ -214,8 +214,9 @@
             </div>
         </div>
     </div>
-    <div id="apartments-container" class="{{ request()->get('view', 'list') === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-6' }}">
-        @include('apartments.partials.apartments-list', ['apartments' => $apartments, 'filters' => $filters])
+    <div id="apartments-container">
+        @php $currentView = request()->get('view', 'list'); @endphp
+        @include('apartments.partials.apartments-list', ['apartments' => $apartments, 'filters' => $filters, 'view' => $currentView])
     </div>
 </main>
 @endsection
@@ -262,6 +263,7 @@
             
             // Get current filters from URL
             const urlParams = new URLSearchParams(window.location.search);
+            const currentView = urlParams.get('view') || 'list';
             const filters = {
                 search: urlParams.get('search') || '',
                 property_type: urlParams.get('property_type') || 'all',
@@ -272,6 +274,7 @@
                 price_max: urlParams.get('price_max') || '',
                 min_area: urlParams.get('min_area') || '',
                 max_area: urlParams.get('max_area') || '',
+                view: currentView,
                 sort: sortValue
             };
             
@@ -303,6 +306,16 @@
                 if (data.success && data.html) {
                     // Update apartments container
                     apartmentsContainer.innerHTML = data.html;
+                    
+                    // Update wrapper div class based on current view
+                    const wrapperDiv = apartmentsContainer.firstElementChild;
+                    if (wrapperDiv) {
+                        if (currentView === 'grid') {
+                            wrapperDiv.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8';
+                        } else {
+                            wrapperDiv.className = 'space-y-6';
+                        }
+                    }
                     
                     // Update count text
                     if (countText && data.count !== undefined) {
@@ -346,6 +359,24 @@
         const apartmentsContainer = document.getElementById('apartments-container');
         const currentView = new URLSearchParams(window.location.search).get('view') || 'list';
         
+        // Get the wrapper div inside apartments-container (first child div)
+        const getWrapperDiv = () => {
+            if (apartmentsContainer && apartmentsContainer.firstElementChild) {
+                return apartmentsContainer.firstElementChild;
+            }
+            return null;
+        };
+        
+        // Initialize wrapper class on page load
+        const wrapperDiv = getWrapperDiv();
+        if (wrapperDiv) {
+            if (currentView === 'grid') {
+                wrapperDiv.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8';
+            } else {
+                wrapperDiv.className = 'space-y-6';
+            }
+        }
+        
         viewToggleButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const view = this.getAttribute('data-view');
@@ -361,12 +392,13 @@
                     }
                 });
                 
-                // Update container class
-                if (apartmentsContainer) {
+                // Update wrapper div class
+                const wrapper = getWrapperDiv();
+                if (wrapper) {
                     if (view === 'grid') {
-                        apartmentsContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                        wrapper.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8';
                     } else {
-                        apartmentsContainer.className = 'space-y-6';
+                        wrapper.className = 'space-y-6';
                     }
                 }
                 

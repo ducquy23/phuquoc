@@ -1,5 +1,5 @@
 @if($apartments->count() > 0)
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="{{ ($view ?? 'grid') === 'list' ? 'space-y-6' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' }}">
     @foreach($apartments as $apartment)
     <div class="group bg-white dark:bg-card-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-primary/5 border border-gray-100 dark:border-slate-700 transition-all duration-300 flex flex-col">
         <div class="relative h-64 overflow-hidden">
