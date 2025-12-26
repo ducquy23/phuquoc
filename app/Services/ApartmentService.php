@@ -106,8 +106,8 @@ class ApartmentService
             ->where('status', 'available');
 
         // Try to match by property type first
-        if ($apartment->property_type) {
-            $query->where('property_type', $apartment->property_type);
+        if ($apartment->hero_filter_property_type_id) {
+            $query->where('hero_filter_property_type_id', $apartment->hero_filter_property_type_id);
         }
 
         // If not enough results, get any available apartments

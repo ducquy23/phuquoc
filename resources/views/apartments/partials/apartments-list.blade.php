@@ -21,7 +21,7 @@
             <div class="flex justify-between items-start mb-2">
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors">{{ $apartment->title }}</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $apartment->excerpt ?: $apartment->location }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $apartment->excerpt ?: ($apartment->heroFilterLocation->name ?? $apartment->district ?? 'Phu Quoc') }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-4 my-4 py-3 border-y border-gray-100 dark:border-slate-700">

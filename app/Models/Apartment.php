@@ -19,15 +19,12 @@ class Apartment extends Model
         'slug',
         'description',
         'excerpt',
-        'property_type',
         'hero_filter_property_type_id',
-        'bedrooms',
         'hero_filter_bed_id',
         'bathrooms',
         'area',
         'floor',
         'total_floors',
-        'location',
         'address',
         'district',
         'hero_filter_location_id',
@@ -80,7 +77,6 @@ class Apartment extends Model
         'gallery_image_ids' => 'array',
         'nearby_attractions' => 'array',
         'extra' => 'array',
-        'bedrooms' => 'integer',
         'bathrooms' => 'integer',
         'floor' => 'integer',
         'total_floors' => 'integer',
@@ -260,28 +256,30 @@ class Apartment extends Model
      *
      * @return string
      */
+    /**
+     * Get property type display from relationship
+     *
+     * @return string
+     */
     public function getPropertyTypeDisplayAttribute(): string
     {
-        return match($this->property_type) {
-            'apartment' => 'Apartment',
-            'villa' => 'Villa',
-            'studio' => 'Studio',
-            'condo' => 'Condo',
-            default => ucfirst($this->property_type ?? 'Property'),
-        };
+        if ($this->heroFilterPropertyType) {
+            return $this->heroFilterPropertyType->name;
+        }
+        return 'Property';
     }
 
     /**
-     * Get bedrooms display
+     * Get bedrooms display from relationship
      *
      * @return string
      */
     public function getBedroomsDisplayAttribute(): string
     {
-        if ($this->bedrooms === 0) {
-            return 'Studio';
+        if ($this->heroFilterBed) {
+            return $this->heroFilterBed->name;
         }
-        return $this->bedrooms . ' Bed' . ($this->bedrooms > 1 ? 's' : '');
+        return 'N/A';
     }
 }
 

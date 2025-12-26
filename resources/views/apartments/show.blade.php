@@ -72,10 +72,10 @@
                 <span class="material-icons-round text-xs text-gray-400">chevron_right</span>
                 <a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors no-underline"
                    href="{{ route('apartments.index') }}">Apartments</a>
-                @if($apartment->district || $apartment->location)
+                @if($apartment->heroFilterLocation || $apartment->district)
                     <span class="material-icons-round text-xs text-gray-400">chevron_right</span>
                     <span class="text-gray-500 dark:text-gray-400">
-                    {{ $apartment->district ?: $apartment->location }}
+                    {{ $apartment->heroFilterLocation->name ?? $apartment->district ?? '' }}
                 </span>
                 @endif
                 <span class="material-icons-round text-xs text-gray-400">chevron_right</span>
@@ -101,7 +101,7 @@
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight">{{ $apartment->title }}</h1>
                         <div class="flex items-center gap-2 mt-2 text-gray-600 dark:text-gray-400">
                             <span class="material-symbols-outlined text-primary text-lg">location_on</span>
-                            <span>{{ $apartment->address ?: ($apartment->location ?: $apartment->district) }}</span>
+                            <span>{{ $apartment->address ?: ($apartment->heroFilterLocation->name ?? $apartment->district ?? 'Phu Quoc') }}</span>
                         </div>
                     </div>
                     <div class="order-1 md:order-2 text-left md:text-right">
@@ -506,7 +506,7 @@
                                     class="relative z-10 bg-white dark:bg-surface-dark px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
                                     <span class="material-symbols-outlined text-red-500">location_on</span>
                                     <span
-                                        class="font-bold text-gray-900 dark:text-white">{{ $apartment->district ?: $apartment->location ?: 'Phu Quoc' }}</span>
+                                        class="font-bold text-gray-900 dark:text-white">{{ $apartment->heroFilterLocation->name ?? $apartment->district ?? 'Phu Quoc' }}</span>
                                 </div>
                             </div>
                         @endif

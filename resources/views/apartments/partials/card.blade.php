@@ -24,7 +24,7 @@
         </h3>
         <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-5">
             <span class="material-symbols-outlined text-sm mr-1 text-primary">location_on</span>
-            {{ $apartment->location ?? 'Location' }}
+            {{ $apartment->heroFilterLocation->name ?? $apartment->district ?? 'Location' }}
         </div>
         <div class="mt-auto border-t border-gray-100 dark:border-gray-700 pt-5 flex items-center justify-between">
             <div>
