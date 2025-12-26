@@ -117,6 +117,120 @@
         }, 5000);
     }
 
+    // Hero Search - Advance Search Toggle
+    (function() {
+        const advanceSearchToggle = document.getElementById('advance-search-toggle');
+        const advanceSearchSection = document.getElementById('advance-search-section');
+        const advanceSearchText = document.getElementById('advance-search-text');
+        
+        if (advanceSearchToggle && advanceSearchSection) {
+            advanceSearchToggle.addEventListener('click', function() {
+                const isShown = advanceSearchSection.classList.contains('show');
+                
+                if (isShown) {
+                    advanceSearchSection.classList.remove('show');
+                    advanceSearchText.textContent = 'Advance Search';
+                    advanceSearchToggle.querySelector('.material-symbols-outlined').textContent = 'tune';
+                } else {
+                    advanceSearchSection.classList.add('show');
+                    advanceSearchText.textContent = 'Hide Advance Search';
+                    advanceSearchToggle.querySelector('.material-symbols-outlined').textContent = 'tune';
+                }
+            });
+        }
+
+        // Price Range Slider
+        const priceMin = document.getElementById('price-min');
+        const priceMax = document.getElementById('price-max');
+        const priceMinDisplay = document.getElementById('price-min-display');
+        const priceMaxDisplay = document.getElementById('price-max-display');
+        const priceRangeFill = document.getElementById('price-range-fill');
+        const priceMinValue = document.getElementById('price-min-value');
+        const priceMaxValue = document.getElementById('price-max-value');
+
+        if (priceMin && priceMax && priceMinDisplay && priceMaxDisplay && priceRangeFill) {
+            function updatePriceRange() {
+                let min = parseInt(priceMin.value);
+                let max = parseInt(priceMax.value);
+                const minLimit = parseInt(priceMin.min);
+                const maxLimit = parseInt(priceMax.max);
+                
+                // Ensure min doesn't exceed max
+                if (min > max) {
+                    const temp = min;
+                    min = max;
+                    max = temp;
+                    priceMin.value = min;
+                    priceMax.value = max;
+                }
+                
+                // Ensure max doesn't go below min
+                if (max < min) {
+                    const temp = max;
+                    max = min;
+                    min = temp;
+                    priceMin.value = min;
+                    priceMax.value = max;
+                }
+                
+                // Update displays with formatting
+                priceMinDisplay.textContent = '$' + min.toLocaleString();
+                priceMaxDisplay.textContent = '$' + max.toLocaleString();
+                
+                // Update hidden inputs
+                if (priceMinValue) priceMinValue.value = min;
+                if (priceMaxValue) priceMaxValue.value = max;
+                
+                // Update fill bar position - calculate based on slider container width
+                const range = maxLimit - minLimit;
+                if (range > 0) {
+                    const minPercent = ((min - minLimit) / range) * 100;
+                    const maxPercent = ((max - minLimit) / range) * 100;
+                    
+                    // Ensure percentages are within bounds
+                    const leftPercent = Math.max(0, Math.min(100, minPercent));
+                    const rightPercent = Math.max(0, Math.min(100, maxPercent));
+                    const widthPercent = Math.max(0, rightPercent - leftPercent);
+                    
+                    priceRangeFill.style.left = leftPercent + '%';
+                    priceRangeFill.style.width = widthPercent + '%';
+                }
+            }
+
+            // Make both sliders interactive - enable pointer events on the inputs
+            priceMin.style.pointerEvents = 'all';
+            priceMax.style.pointerEvents = 'all';
+            
+            // Set z-index dynamically based on values
+            function updateZIndex() {
+                const minVal = parseInt(priceMin.value);
+                const maxVal = parseInt(priceMax.value);
+                
+                if (minVal <= maxVal) {
+                    priceMin.style.zIndex = '2';
+                    priceMax.style.zIndex = '3';
+                } else {
+                    priceMin.style.zIndex = '3';
+                    priceMax.style.zIndex = '2';
+                }
+            }
+
+            priceMin.addEventListener('input', function() {
+                updatePriceRange();
+                updateZIndex();
+            });
+            
+            priceMax.addEventListener('input', function() {
+                updatePriceRange();
+                updateZIndex();
+            });
+            
+            // Initialize
+            updatePriceRange();
+            updateZIndex();
+        }
+    })();
+
     // Contact Form AJAX Submission
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {

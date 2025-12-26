@@ -66,6 +66,55 @@
                             class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none group-hover:scale-110 transition-transform">expand_more</span>
                     </div>
                 </div>
+
+                <!-- Advance Search Section (Hidden by default) -->
+                <div id="advance-search-section" class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-2 overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
+                    <div class="space-y-6">
+                        <!-- Price Range Slider -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                Price Range (Monthly)
+                            </label>
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">From <span id="price-min-display" class="text-primary font-bold">${{ number_format($priceRange['min'] ?? 0) }}</span></span>
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">To <span id="price-max-display" class="text-primary font-bold">${{ number_format($priceRange['max'] ?? 2000) }}</span></span>
+                                </div>
+                                <div class="price-range-container">
+                                    <div class="price-range-track"></div>
+                                    <div id="price-range-fill"></div>
+                                    <input type="range" id="price-min" min="{{ $priceRange['min'] ?? 0 }}" max="{{ $priceRange['max'] ?? 2000 }}" value="{{ $priceRange['min'] ?? 0 }}" step="10"
+                                           class="price-range-input">
+                                    <input type="range" id="price-max" min="{{ $priceRange['min'] ?? 0 }}" max="{{ $priceRange['max'] ?? 2000 }}" value="{{ $priceRange['max'] ?? 2000 }}" step="10"
+                                           class="price-range-input">
+                                </div>
+                                <input type="hidden" id="price-min-value" name="price_min" value="{{ $priceRange['min'] ?? 0 }}">
+                                <input type="hidden" id="price-max-value" name="price_max" value="{{ $priceRange['max'] ?? 2000 }}">
+                            </div>
+                        </div>
+
+                        <!-- Area Range Inputs -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="min-area" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Min Area (m²)
+                                </label>
+                                <input type="number" id="min-area" min="0" step="1"
+                                       class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+                                       placeholder="Min area">
+                            </div>
+                            <div>
+                                <label for="max-area" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Max Area (m²)
+                                </label>
+                                <input type="number" id="max-area" min="0" step="1"
+                                       class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+                                       placeholder="Max area">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-2">
                     <a class="inline-flex items-center text-sm font-medium text-primary bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
                        href="#">
@@ -73,46 +122,16 @@
                         Looking for certain features?
                     </a>
                     <div class="flex items-center gap-6 w-full md:w-auto justify-end">
-                        <a class="hidden md:inline-flex items-center text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
-                           href="#">
+                        <button id="advance-search-toggle" class="hidden md:inline-flex items-center text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+                           type="button">
                             <span class="material-symbols-outlined text-xl mr-1">tune</span>
-                            Advance Search
-                        </a>
+                            <span id="advance-search-text">Advance Search</span>
+                        </button>
                         <button
                             class="w-full md:w-40 bg-primary hover:bg-secondary text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:scale-95">
                             Search
                         </button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div
-            class="hidden lg:block absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-full max-w-2xl z-20">
-            <div
-                class="bg-white dark:bg-surface-dark rounded-2xl shadow-float p-3 flex items-center gap-4 border border-gray-100 dark:border-gray-700">
-                <div class="relative w-40 h-28 rounded-xl overflow-hidden shrink-0">
-                    <img alt="Featured Apartment"
-                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                         src="{{ $heroFeaturedApartment['image'] ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuDms_FNhLLxe-Nloyhv-339Ogd8l-cpI83QgWbA6fsyY9WZBRMAG00Ztz4AeuMXg-3n7VYZxqEnL4O_3WWXZGB9lx_Xr2hlF5p5SiZi_CdodhaYLAxq5vNs0VPsSX_JJ7nFrR5pIiQAJbCOorF_jf6OTfvLHZDDBoTURGA4-B5EXlRbZsyCiZh3HDnes99QAOUqwv_wxONuWxP0dCuDUDRCuIXhNAEaCP4K28y1dh2kf_LVyW_2G8nWgTICpR9TspneCftKYnMmC4nv' }}"/>
-                    <div
-                        class="absolute top-2 left-2 bg-primary text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">
-                        Featured
-                    </div>
-                </div>
-                <div class="flex-1 pr-2">
-                    <h3 class="text-base font-bold text-gray-900 dark:text-white mb-0.5 leading-snug">{{ $heroFeaturedApartment['title'] ?? '18th Floor Sunset Town Phu Quoc | One Bedroom' }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">{{ $heroFeaturedApartment['description'] ?? 'Sea + Firework View' }}</p>
-                    <div class="flex items-center gap-4 text-xs font-medium text-gray-600 dark:text-gray-300">
-                        <span class="flex items-center"><span
-                                class="material-symbols-outlined text-sm mr-1 text-primary">bed</span> {{ $heroFeaturedApartment['beds'] ?? '1 Bed' }}</span>
-                        <span class="flex items-center"><span
-                                class="material-symbols-outlined text-sm mr-1 text-primary">square_foot</span> {{ $heroFeaturedApartment['area'] ?? '50 m²' }}</span>
-                    </div>
-                </div>
-                <div class="text-right pr-4 border-l border-gray-100 dark:border-gray-700 pl-4">
-                    <div class="text-[10px] font-bold text-primary mb-1 uppercase tracking-wide">Available</div>
-                    <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none mb-1">{{ $heroFeaturedApartment['price'] ?? '$732' }}</div>
-                    <div class="text-[10px] text-gray-400 font-medium">/ Monthly</div>
                 </div>
             </div>
         </div>

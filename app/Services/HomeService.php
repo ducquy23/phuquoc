@@ -63,6 +63,13 @@ class HomeService
             'zalo_whatsapp' => Option::get('contact_zalo_whatsapp', Option::get('contact_phone', '')),
         ];
 
+        // Get price range for hero search
+        $priceRange = Apartment::where('is_published', true)
+            ->where('status', 'available')
+            ->whereNotNull('price_monthly')
+            ->selectRaw('MIN(price_monthly) as min_price, MAX(price_monthly) as max_price')
+            ->first();
+
         return [
             'latestPosts' => $latestPosts,
             'apartments' => $apartments,
@@ -77,6 +84,10 @@ class HomeService
             'heroPropertyTypes' => $this->heroFilterService->getPropertyTypes(),
             'heroBeds' => $this->heroFilterService->getBeds(),
             'heroFeaturedApartment' => $this->heroFilterService->getFeaturedApartment(),
+            'priceRange' => [
+                'min' => $priceRange->min_price ?? 0,
+                'max' => $priceRange->max_price ?? 2000,
+            ],
         ];
     }
 
