@@ -18,3 +18,4 @@ class MonthlyRentalsPage extends Page
 
 
 
+

@@ -58,14 +58,6 @@
                     @endif
                 </ul>
             </div>
-            <div>
-                <h4 class="font-bold text-gray-900 dark:text-white mb-6 text-lg">Newsletter</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Subscribe for the latest updates and offers.</p>
-                <form id="newsletter-form" class="flex">
-                    <input id="newsletter-email" name="email" class="flex-1 px-4 py-3 rounded-l-xl border border-r-0 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-1 focus:ring-primary text-gray-900 dark:text-white" placeholder="Your email" type="email" required/>
-                    <button type="submit" id="newsletter-submit" class="bg-primary text-white px-5 py-3 rounded-r-xl hover:bg-secondary text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Join</button>
-                </form>
-            </div>
         </div>
         <div class="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-xs text-gray-400">© {{ $currentYear }} PQ Rentals. All rights reserved.</p>
@@ -150,11 +142,11 @@
 
         const toast = document.createElement('div');
         toast.className = `toast ${type} flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg max-w-md transform translate-x-full transition-all duration-300`;
-        
-        const icon = type === 'success' 
+
+        const icon = type === 'success'
             ? '<span class="material-symbols-outlined">check_circle</span>'
             : '<span class="material-symbols-outlined">error</span>';
-        
+
         toast.innerHTML = `
             ${icon}
             <span class="flex-1 text-sm font-medium">${message}</span>
@@ -162,14 +154,14 @@
                 <span class="material-symbols-outlined text-lg">close</span>
             </button>
         `;
-        
+
         toastContainer.appendChild(toast);
-        
+
         // Trigger animation
         setTimeout(() => {
             toast.classList.remove('translate-x-full');
         }, 10);
-        
+
         // Auto remove after 5 seconds
         setTimeout(() => {
             toast.classList.add('translate-x-full');
@@ -182,22 +174,22 @@
         const newsletterForm = document.getElementById('newsletter-form');
         const newsletterEmail = document.getElementById('newsletter-email');
         const newsletterSubmit = document.getElementById('newsletter-submit');
-        
+
         if (newsletterForm) {
             newsletterForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
+
                 const email = newsletterEmail.value.trim();
-                
+
                 if (!email) {
                     showToast('Please enter a valid email address', 'error');
                     return;
                 }
-                
+
                 // Disable submit button
                 newsletterSubmit.disabled = true;
                 newsletterSubmit.textContent = 'Subscribing...';
-                
+
                 try {
                     const response = await fetch('{{ route("blog.subscribe") }}', {
                         method: 'POST',
@@ -208,9 +200,9 @@
                         },
                         body: JSON.stringify({ email: email })
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.success) {
                         showToast(data.message || 'Thank you for subscribing!', 'success');
                         newsletterEmail.value = '';
@@ -231,14 +223,14 @@
 
     // Scroll to Top Button
     const scrollToTopBtn = document.getElementById('scroll-to-top');
-    
+
     function scrollToTop() {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
     }
-    
+
     // Show/hide scroll to top button
     window.addEventListener('scroll', function() {
         if (scrollToTopBtn) {
