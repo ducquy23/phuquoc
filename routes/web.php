@@ -41,4 +41,7 @@ Route::get('/phu-quoc-apartments-for-rent', [SeoController::class, 'apartmentsFo
 // Generic CMS pages (tạo page riêng trong admin rồi truy cập /pages/{slug})
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 
+// Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 

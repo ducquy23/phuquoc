@@ -26,8 +26,7 @@ class Apartment extends Model
         'floor',
         'total_floors',
         'address',
-        'district',
-        'hero_filter_location_id',
+        'ward_id',
         'latitude',
         'longitude',
         'google_maps_embed',
@@ -123,14 +122,6 @@ class Apartment extends Model
     /**
      * @return BelongsTo
      */
-    public function heroFilterLocation(): BelongsTo
-    {
-        return $this->belongsTo(HeroFilterLocation::class, 'hero_filter_location_id');
-    }
-
-    /**
-     * @return BelongsTo
-     */
     public function heroFilterPropertyType(): BelongsTo
     {
         return $this->belongsTo(HeroFilterPropertyType::class, 'hero_filter_property_type_id');
@@ -142,6 +133,14 @@ class Apartment extends Model
     public function heroFilterBed(): BelongsTo
     {
         return $this->belongsTo(HeroFilterBed::class, 'hero_filter_bed_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function ward(): BelongsTo
+    {
+        return $this->belongsTo(Ward::class, 'ward_id');
     }
 
     /**

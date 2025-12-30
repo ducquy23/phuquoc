@@ -23,6 +23,9 @@
         <link rel="canonical" href="{{ url()->current() }}">
     @endif
 
+    {{-- Sitemap --}}
+    <link rel="sitemap" type="application/xml" href="{{ route('sitemap') }}">
+
     {{-- SEO Meta Tags --}}
     @hasSection('noindex')
         <meta name="robots" content="noindex, nofollow">

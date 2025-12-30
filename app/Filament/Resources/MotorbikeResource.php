@@ -10,6 +10,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
@@ -67,11 +71,12 @@ class MotorbikeResource extends Resource
                                 Forms\Components\Select::make('type')
                                     ->label('Transmission Type')
                                     ->options([
-                                        'automatic' => 'Automatic',
-                                        'manual' => 'Manual',
+                                        'automatic' => 'Automatic (Scooter)',
+                                        'manual' => 'Manual (Gear)',
                                     ])
                                     ->required()
                                     ->default('automatic')
+                                    ->helperText('Automatic = Scooter (no gear shifting). Manual = Gear bike (requires gear shifting)')
                                     ->columnSpan(1),
                                 Forms\Components\TextInput::make('engine_size')
                                     ->label('Engine Size')
@@ -88,12 +93,24 @@ class MotorbikeResource extends Resource
                                     ->label('Daily Price')
                                     ->required()
                                     ->numeric()
+                                    ->step(1)
+                                    ->afterStateHydrated(function ($component, $state) {
+                                        if ($state !== null) {
+                                            $component->state((int)$state);
+                                        }
+                                    })
                                     ->prefix('$')
                                     ->helperText('Price per day in USD')
                                     ->columnSpan(1),
                                 Forms\Components\TextInput::make('price_monthly')
                                     ->label('Monthly Price')
                                     ->numeric()
+                                    ->step(1)
+                                    ->afterStateHydrated(function ($component, $state) {
+                                        if ($state !== null) {
+                                            $component->state((int)$state);
+                                        }
+                                    })
                                     ->prefix('$')
                                     ->helperText('Optional: Price per month in USD')
                                     ->columnSpan(1),
@@ -140,16 +157,6 @@ class MotorbikeResource extends Resource
                                     ->required()
                                     ->default('available')
                                     ->columnSpan(1),
-                                Forms\Components\Toggle::make('is_published')
-                                    ->label('Published')
-                                    ->helperText('Show this motorbike on the website')
-                                    ->default(true)
-                                    ->columnSpan(1),
-                                Forms\Components\Toggle::make('is_featured')
-                                    ->label('Featured')
-                                    ->helperText('Highlight this motorbike')
-                                    ->default(false)
-                                    ->columnSpan(1),
                                 Forms\Components\TextInput::make('sort_order')
                                     ->label('Sort Order')
                                     ->numeric()
@@ -161,6 +168,16 @@ class MotorbikeResource extends Resource
                                     ->helperText('When to publish this motorbike')
                                     ->default(now())
                                     ->columnSpan(2),
+                                Forms\Components\Toggle::make('is_published')
+                                    ->label('Published')
+                                    ->helperText('Show this motorbike on the website')
+                                    ->default(true)
+                                    ->columnSpan(1),
+                                Forms\Components\Toggle::make('is_featured')
+                                    ->label('Featured')
+                                    ->helperText('Highlight this motorbike')
+                                    ->default(false)
+                                    ->columnSpan(1),
                             ])
                             ->columns(2),
                     ])
@@ -171,6 +188,7 @@ class MotorbikeResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(fn ($record) => static::getUrl('view', ['record' => $record]))
             ->columns([
                 CuratorColumn::make('featured_image_id')
                     ->label('Image')
@@ -182,7 +200,11 @@ class MotorbikeResource extends Resource
                     ->weight('bold'),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Type')
-                    ->formatStateUsing(fn (string $state): string => ucfirst($state))
+                    ->formatStateUsing(fn (string $state): string => match($state) {
+                        'automatic' => 'Automatic',
+                        'manual' => 'Manual',
+                        default => ucfirst($state),
+                    })
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'automatic' => 'success',
@@ -194,13 +216,12 @@ class MotorbikeResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price_daily')
                     ->label('Daily Price')
-                    ->money('USD')
+                    ->formatStateUsing(fn ($state) => $state ? '$' . number_format($state, 0) : 'N/A')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price_monthly')
                     ->label('Monthly Price')
-                    ->money('USD')
-                    ->sortable()
-                    ->default('—'),
+                    ->formatStateUsing(fn ($state) => $state ? '$' . number_format($state, 0) : '—')
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_published')
                     ->label('Published')
                     ->boolean()
@@ -255,6 +276,7 @@ class MotorbikeResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
@@ -269,6 +291,147 @@ class MotorbikeResource extends Resource
             ->defaultSort('sort_order', 'asc');
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Overview')
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        ImageEntry::make('featured_image_id')
+                            ->label('Featured Image')
+                            ->getStateUsing(function ($record) {
+                                if ($record->featured_image_id) {
+                                    try {
+                                        $media = \Awcodes\Curator\Models\Media::find($record->featured_image_id);
+                                        return $media?->url ?? asset('assets/images/Image-not-found.png');
+                                    } catch (\Exception $e) {
+                                        return asset('assets/images/Image-not-found.png');
+                                    }
+                                }
+                                return asset('assets/images/Image-not-found.png');
+                            })
+                            ->height(300)
+                            ->columnSpanFull(),
+                        TextEntry::make('name')
+                            ->label('Name')
+                            ->size(TextEntry\TextEntrySize::Large)
+                            ->weight('bold')
+                            ->icon('heroicon-o-bolt')
+                            ->columnSpan(2),
+                        TextEntry::make('slug')
+                            ->label('Slug')
+                            ->icon('heroicon-o-link')
+                            ->copyable()
+                            ->columnSpan(1),
+                        TextEntry::make('description')
+                            ->label('Description')
+                            ->icon('heroicon-o-document-text')
+                            ->placeholder('No description')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(3),
+
+                Section::make('Specifications')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->schema([
+                        TextEntry::make('type')
+                            ->label('Transmission Type')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => match($state) {
+                                'automatic' => 'Automatic (Scooter)',
+                                'manual' => 'Manual (Gear)',
+                                default => ucfirst($state),
+                            })
+                            ->color(fn ($state) => match($state) {
+                                'automatic' => 'success',
+                                'manual' => 'warning',
+                                default => 'gray',
+                            })
+                            ->icon('heroicon-o-cog-6-tooth')
+                            ->columnSpan(1),
+                        TextEntry::make('engine_size')
+                            ->label('Engine Size')
+                            ->badge()
+                            ->color('info')
+                            ->icon('heroicon-o-bolt')
+                            ->formatStateUsing(fn ($state) => $state ?: 'N/A')
+                            ->columnSpan(1),
+                    ])
+                    ->columns(2),
+
+                Section::make('Pricing')
+                    ->icon('heroicon-o-currency-dollar')
+                    ->schema([
+                        TextEntry::make('price_daily')
+                            ->label('Daily Price')
+                            ->size(TextEntry\TextEntrySize::Large)
+                            ->weight('bold')
+                            ->color('success')
+                            ->icon('heroicon-o-calendar-days')
+                            ->formatStateUsing(fn ($state) => $state ? '$' . number_format($state, 0) . '/day' : 'N/A')
+                            ->columnSpan(1),
+                        TextEntry::make('price_monthly')
+                            ->label('Monthly Price')
+                            ->size(TextEntry\TextEntrySize::Large)
+                            ->weight('bold')
+                            ->color('info')
+                            ->icon('heroicon-o-calendar')
+                            ->formatStateUsing(fn ($state) => $state ? '$' . number_format($state, 0) . '/month' : 'N/A')
+                            ->columnSpan(1),
+                        TextEntry::make('currency')
+                            ->label('Currency')
+                            ->badge()
+                            ->icon('heroicon-o-banknotes')
+                            ->columnSpan(1),
+                    ])
+                    ->columns(3),
+
+                Section::make('Status & Settings')
+                    ->icon('heroicon-o-adjustments-horizontal')
+                    ->schema([
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => ucfirst($state))
+                            ->color(fn ($state) => match($state) {
+                                'available' => 'success',
+                                'unavailable' => 'danger',
+                                'maintenance' => 'warning',
+                                default => 'gray',
+                            })
+                            ->icon('heroicon-o-check-circle')
+                            ->columnSpan(1),
+                        TextEntry::make('is_featured')
+                            ->label('Featured')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                            ->color(fn ($state) => $state ? 'success' : 'gray')
+                            ->icon('heroicon-o-star')
+                            ->columnSpan(1),
+                        TextEntry::make('is_published')
+                            ->label('Published')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                            ->color(fn ($state) => $state ? 'success' : 'danger')
+                            ->icon('heroicon-o-eye')
+                            ->columnSpan(1),
+                        TextEntry::make('sort_order')
+                            ->label('Sort Order')
+                            ->icon('heroicon-o-arrow-up')
+                            ->columnSpan(1),
+                        TextEntry::make('published_at')
+                            ->label('Published At')
+                            ->dateTime('F d, Y \a\t g:i A')
+                            ->icon('heroicon-o-calendar')
+                            ->placeholder('Not published')
+                            ->columnSpan(1),
+                    ])
+                    ->columns(3)
+                    ->collapsible(),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -281,6 +444,7 @@ class MotorbikeResource extends Resource
         return [
             'index' => Pages\ListMotorbikes::route('/'),
             'create' => Pages\CreateMotorbike::route('/create'),
+            'view' => Pages\ViewMotorbike::route('/{record}'),
             'edit' => Pages\EditMotorbike::route('/{record}/edit'),
         ];
     }

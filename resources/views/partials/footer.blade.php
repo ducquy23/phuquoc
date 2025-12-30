@@ -30,6 +30,14 @@
                 </ul>
             </div>
             <div>
+                <h4 class="font-bold text-gray-900 dark:text-white mb-6 text-lg">Rentals</h4>
+                <ul class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                    <li><a class="hover:text-primary transition-colors" href="{{ route('seo.phu-quoc-apartments-for-rent') }}">Apartments for Rent</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{{ route('seo.long-term-rentals') }}">Long-Term Rentals</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{{ route('seo.monthly-rentals') }}">Monthly Rentals</a></li>
+                </ul>
+            </div>
+            <div>
                 <h4 class="font-bold text-gray-900 dark:text-white mb-6 text-lg">Company</h4>
                 <ul class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
                     <li><a class="hover:text-primary transition-colors" href="{{ route('contact') }}">Contact Us</a></li>

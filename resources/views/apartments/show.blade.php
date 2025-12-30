@@ -72,10 +72,10 @@
                 <span class="material-icons-round text-xs text-gray-400">chevron_right</span>
                 <a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors no-underline"
                    href="{{ route('apartments.index') }}">Apartments</a>
-                @if($apartment->heroFilterLocation || $apartment->district)
+                @if($apartment->district || $apartment->location)
                     <span class="material-icons-round text-xs text-gray-400">chevron_right</span>
                     <span class="text-gray-500 dark:text-gray-400">
-                    {{ $apartment->heroFilterLocation->name ?? $apartment->district ?? '' }}
+                    {{ $apartment->district ?: $apartment->location }}
                 </span>
                 @endif
                 <span class="material-icons-round text-xs text-gray-400">chevron_right</span>
@@ -101,7 +101,7 @@
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight">{{ $apartment->title }}</h1>
                         <div class="flex items-center gap-2 mt-2 text-gray-600 dark:text-gray-400">
                             <span class="material-symbols-outlined text-primary text-lg">location_on</span>
-                            <span>{{ $apartment->address ?: ($apartment->heroFilterLocation->name ?? $apartment->district ?? 'Phu Quoc') }}</span>
+                            <span>{{ $apartment->address ?: ($apartment->location ?: $apartment->district) }}</span>
                         </div>
                     </div>
                     <div class="order-1 md:order-2 text-left md:text-right">
@@ -279,11 +279,13 @@
             <div class="mb-8">
                 <div class="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
                     <nav class="flex items-center gap-6 overflow-x-auto scrollbar-hide" id="content-nav">
-                        <button
-                            class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                            data-target="thong-tin">
-                            Thông tin
-                        </button>
+                        @if($apartment->description || $apartment->excerpt)
+                            <button
+                                class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                data-target="thong-tin">
+                                Thông tin
+                            </button>
+                        @endif
                         @if($apartment->amenities && count($apartment->amenities) > 0)
                             <button
                                 class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
@@ -291,11 +293,13 @@
                                 Tiện ích
                             </button>
                         @endif
-                        <button
-                            class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                            data-target="chinh-sach">
-                            Chính sách
-                        </button>
+                        @if($apartment->booking_policy || $apartment->checkin_checkout_policy || $apartment->rules_policy || $apartment->cancellation_policy)
+                            <button
+                                class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                data-target="chinh-sach">
+                                Chính sách
+                            </button>
+                        @endif
                         @if(count($allImages) > 0)
                             <button
                                 class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
@@ -303,11 +307,13 @@
                                 Hình ảnh
                             </button>
                         @endif
-                        <button
-                            class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                            data-target="chi-duong">
-                            Chỉ đường
-                        </button>
+                        @if($apartment->google_maps_embed || ($apartment->nearby_attractions && count($apartment->nearby_attractions) > 0))
+                            <button
+                                class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                data-target="chi-duong">
+                                Chỉ đường
+                            </button>
+                        @endif
                     </nav>
                 </div>
             </div>
@@ -361,19 +367,19 @@
                             </div>
                         @endif
                     </div>
-                    <div id="thong-tin"
-                        class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm scroll-mt-24">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">About this property</h3>
-                        <div class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
-                            @if($apartment->description)
-                                {!! nl2br(e($apartment->description)) !!}
-                            @elseif($apartment->excerpt)
-                                <p>{{ $apartment->excerpt }}</p>
-                            @else
-                                <p>No description available for this property.</p>
-                            @endif
+                    @if($apartment->description || $apartment->excerpt)
+                        <div id="thong-tin"
+                            class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm scroll-mt-24">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">About this property</h3>
+                            <div class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                                @if($apartment->description)
+                                    {!! nl2br(e($apartment->description)) !!}
+                                @elseif($apartment->excerpt)
+                                    <p>{{ $apartment->excerpt }}</p>
+                                @endif
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     @if($apartment->amenities && count($apartment->amenities) > 0)
                         @php
                             $amenityConfig = config('amenities.list', []);
@@ -466,68 +472,70 @@
                             </div>
                         </div>
                     @endif
-                    <div id="chi-duong"
-                        class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm scroll-mt-24">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Location</h3>
+                    @if($apartment->google_maps_embed || ($apartment->nearby_attractions && count($apartment->nearby_attractions) > 0))
+                        <div id="chi-duong"
+                            class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm scroll-mt-24">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Location</h3>
+                                @if($apartment->google_maps_embed)
+                                    @php
+                                        // Extract coordinates from Google Maps embed iframe
+                                        preg_match('/!3d(-?\d+\.?\d*)/', $apartment->google_maps_embed, $latMatches);
+                                        preg_match('/!2d(-?\d+\.?\d*)/', $apartment->google_maps_embed, $lngMatches);
+                                        $lat = $latMatches[1] ?? null;
+                                        $lng = $lngMatches[1] ?? null;
+                                        $googleMapsUrl = $lat && $lng ? "https://www.google.com/maps?q={$lat},{$lng}" : '#';
+                                    @endphp
+                                    <a class="text-primary text-sm font-medium hover:underline flex items-center gap-1"
+                                       href="{{ $googleMapsUrl }}" target="_blank" rel="noopener">
+                                        Open in Google Maps <span
+                                            class="material-symbols-outlined text-sm">open_in_new</span>
+                                    </a>
+                                @endif
+                            </div>
                             @if($apartment->google_maps_embed)
                                 @php
-                                    // Extract coordinates from Google Maps embed iframe
-                                    preg_match('/!3d(-?\d+\.?\d*)/', $apartment->google_maps_embed, $latMatches);
-                                    preg_match('/!2d(-?\d+\.?\d*)/', $apartment->google_maps_embed, $lngMatches);
-                                    $lat = $latMatches[1] ?? null;
-                                    $lng = $lngMatches[1] ?? null;
-                                    $googleMapsUrl = $lat && $lng ? "https://www.google.com/maps?q={$lat},{$lng}" : '#';
+                                    // Replace width and height in iframe to make it responsive
+                                    $mapsEmbed = preg_replace('/width="[^"]*"/', 'width="100%"', $apartment->google_maps_embed);
+                                    $mapsEmbed = preg_replace('/height="[^"]*"/', 'height="100%"', $mapsEmbed);
+                                    $mapsEmbed = preg_replace('/style="[^"]*"/', 'style="border:0; width:100%; height:100%;"', $mapsEmbed);
                                 @endphp
-                                <a class="text-primary text-sm font-medium hover:underline flex items-center gap-1"
-                                   href="{{ $googleMapsUrl }}" target="_blank" rel="noopener">
-                                    Open in Google Maps <span
-                                        class="material-symbols-outlined text-sm">open_in_new</span>
-                                </a>
+                                <div class="bg-gray-200 dark:bg-gray-800 rounded-xl h-96 w-full relative overflow-hidden">
+                                    {!! $mapsEmbed !!}
+                                </div>
+                            @else
+                                <div
+                                    class="bg-gray-200 dark:bg-gray-800 rounded-xl h-64 w-full flex items-center justify-center relative overflow-hidden group">
+                                    <img alt="Map Preview" class="absolute inset-0 w-full h-full object-cover opacity-60"
+                                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKmtCDcLoY0uJRo2adnLu9ADr_fwhb3StdWD9EYo_NHoz6N5eq04PymAYDnelYVsoLKbRMRyQmFJdWCG6FeNvEjJ8MJabkiOoVHP6L5MMYvaI0Xrn4zm1fDKt4XR02SdTe5U2i5ipdGdSCaOm56sJ8-6HLinac0GnimUCFmTWHSmiy9xwHIob77zlSsKQdqPADy3af1mKJeUJTSlMBzd9G_WdFVORQMD8IMzdyGPDKMYOz80uPHOcbIWKcK0QKuKmmgpzagMkgtfpC"/>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"></div>
+                                    <div
+                                        class="relative z-10 bg-white dark:bg-surface-dark px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-red-500">location_on</span>
+                                        <span
+                                            class="font-bold text-gray-900 dark:text-white">{{ $apartment->district ?: $apartment->location ?: 'Phu Quoc' }}</span>
+                                    </div>
+                                </div>
+                            @endif
+                            @if($apartment->nearby_attractions && count($apartment->nearby_attractions) > 0)
+                                <div class="mt-6">
+                                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Nearby Attractions</h4>
+                                    <ul class="space-y-3">
+                                        @foreach($apartment->nearby_attractions as $attraction)
+                                            <li class="flex justify-between text-sm">
+                                                <span
+                                                    class="text-gray-600 dark:text-gray-400">{{ $attraction['name'] ?? $attraction }}</span>
+                                                @if(isset($attraction['distance']))
+                                                    <span
+                                                        class="font-medium text-gray-900 dark:text-white">{{ $attraction['distance'] }}</span>
+                                                @endif
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @endif
                         </div>
-                        @if($apartment->google_maps_embed)
-                            @php
-                                // Replace width and height in iframe to make it responsive
-                                $mapsEmbed = preg_replace('/width="[^"]*"/', 'width="100%"', $apartment->google_maps_embed);
-                                $mapsEmbed = preg_replace('/height="[^"]*"/', 'height="100%"', $mapsEmbed);
-                                $mapsEmbed = preg_replace('/style="[^"]*"/', 'style="border:0; width:100%; height:100%;"', $mapsEmbed);
-                            @endphp
-                            <div class="bg-gray-200 dark:bg-gray-800 rounded-xl h-96 w-full relative overflow-hidden">
-                                {!! $mapsEmbed !!}
-                            </div>
-                        @else
-                            <div
-                                class="bg-gray-200 dark:bg-gray-800 rounded-xl h-64 w-full flex items-center justify-center relative overflow-hidden group">
-                                <img alt="Map Preview" class="absolute inset-0 w-full h-full object-cover opacity-60"
-                                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKmtCDcLoY0uJRo2adnLu9ADr_fwhb3StdWD9EYo_NHoz6N5eq04PymAYDnelYVsoLKbRMRyQmFJdWCG6FeNvEjJ8MJabkiOoVHP6L5MMYvaI0Xrn4zm1fDKt4XR02SdTe5U2i5ipdGdSCaOm56sJ8-6HLinac0GnimUCFmTWHSmiy9xwHIob77zlSsKQdqPADy3af1mKJeUJTSlMBzd9G_WdFVORQMD8IMzdyGPDKMYOz80uPHOcbIWKcK0QKuKmmgpzagMkgtfpC"/>
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"></div>
-                                <div
-                                    class="relative z-10 bg-white dark:bg-surface-dark px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-red-500">location_on</span>
-                                    <span
-                                        class="font-bold text-gray-900 dark:text-white">{{ $apartment->heroFilterLocation->name ?? $apartment->district ?? 'Phu Quoc' }}</span>
-                                </div>
-                            </div>
-                        @endif
-                        @if($apartment->nearby_attractions && count($apartment->nearby_attractions) > 0)
-                            <div class="mt-6">
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Nearby Attractions</h4>
-                                <ul class="space-y-3">
-                                    @foreach($apartment->nearby_attractions as $attraction)
-                                        <li class="flex justify-between text-sm">
-                                            <span
-                                                class="text-gray-600 dark:text-gray-400">{{ $attraction['name'] ?? $attraction }}</span>
-                                            @if(isset($attraction['distance']))
-                                                <span
-                                                    class="font-medium text-gray-900 dark:text-white">{{ $attraction['distance'] }}</span>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                    </div>
+                    @endif
                 </div>
                 <div class="lg:col-span-1">
                     <div class="sticky top-24 space-y-6">
@@ -716,7 +724,7 @@
                                     <h4 class="font-bold text-lg text-gray-900 dark:text-white mb-2 group-hover:text-primary transition">{{ $similar->title }}</h4>
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-1">
                                         <span
-                                            class="material-symbols-outlined text-sm">location_on</span> {{ $similar->district ?: $similar->location }}
+                                            class="material-symbols-outlined text-sm">location_on</span> {{ $similar->address ?: ($similar->ward->name ?? 'Phu Quoc') }}
                                     </p>
                                     <div
                                         class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-4">
@@ -1047,50 +1055,23 @@
                         'Accept': 'application/json'
                     }
                 })
-                .then(response => {
-                    // Check if response is ok
-                    if (!response.ok) {
-                        return response.json().then(err => {
-                            throw err;
-                        }).catch(() => {
-                            throw new Error('Server error');
-                        });
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         // Show success toast
-                        showToast(data.message || 'Thank you! Your inquiry has been sent successfully.', 'success');
+                        showToast('Thank you! Your inquiry has been sent successfully.', 'success');
                         
                         // Reset form
                         contactForm.reset();
                     } else {
-                        // Show error toast with validation errors if available
-                        let errorMessage = data.message || 'Something went wrong. Please try again.';
-                        
-                        // If there are validation errors, show first error
-                        if (data.errors && Object.keys(data.errors).length > 0) {
-                            const firstError = Object.values(data.errors)[0];
-                            errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-                        }
-                        
+                        // Show error toast
+                        const errorMessage = data.message || 'Something went wrong. Please try again.';
                         showToast(errorMessage, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    let errorMessage = 'An error occurred. Please try again later.';
-                    
-                    // Handle validation errors
-                    if (error.errors && Object.keys(error.errors).length > 0) {
-                        const firstError = Object.values(error.errors)[0];
-                        errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-                    } else if (error.message) {
-                        errorMessage = error.message;
-                    }
-                    
-                    showToast(errorMessage, 'error');
+                    showToast('An error occurred. Please try again later.', 'error');
                 })
                 .finally(() => {
                     // Re-enable submit button

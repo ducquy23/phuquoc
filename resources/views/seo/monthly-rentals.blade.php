@@ -1,29 +1,51 @@
 @extends('layouts.app')
 
-@section('title', 'Monthly Apartment Rentals in Phu Quoc - Flexible Short-Term Stays')
+@section('title', (isset($page->title) && $page->title) ? $page->title : 'Monthly Apartment Rentals in Phu Quoc - Flexible Short-Term Stays')
 
-@section('metaDescription', 'Find the perfect monthly apartment rental in Phu Quoc. Flexible short-term stays for digital nomads and tourists with no long-term contracts.')
+@section('metaDescription', (isset($page->meta_description) && $page->meta_description) ? $page->meta_description : 'Find the perfect monthly apartment rental in Phu Quoc. Flexible short-term stays for digital nomads and tourists with no long-term contracts.')
+
+@if($page && isset($page->meta_keywords) && $page->meta_keywords)
+    @section('metaKeywords', $page->meta_keywords)
+@endif
 
 @section('content')
 <!-- Hero Section -->
-<section class="relative flex flex-col items-center justify-center min-h-[600px] w-full bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0DqCZbI61cEmyT2NoP-THh8ywcVGtuZap1k8XCJe6QCoKz87DOYYh2mBoy_g-KY0y73hVGlYTh0iM8uKkbBEMt536LW8GSbfiHRRmO29HjemOCEQIM5S3-2ps_vvPgNC17S4TCxb58DlRUo5x7rKD7HEQLKticIDB15jxCnB0XjzVgvtcY6aHEGmL5fgSPLFdFFWybATl1vhxfrtjn3iWxLx5llKBaGgHtzTazTRQunrxBsqnlgY5kMVyOrG5vx883NKspd9VwWTt');">
+<section class="relative flex flex-col items-center justify-center min-h-[600px] w-full bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('{{ ($page && isset($page->hero_background_image_url) && $page->hero_background_image_url) ? $page->hero_background_image_url : "https://lh3.googleusercontent.com/aida-public/AB6AXuA0DqCZbI61cEmyT2NoP-THh8ywcVGtuZap1k8XCJe6QCoKz87DOYYh2mBoy_g-KY0y73hVGlYTh0iM8uKkbBEMt536LW8GSbfiHRRmO29HjemOCEQIM5S3-2ps_vvPgNC17S4TCxb58DlRUo5x7rKD7HEQLKticIDB15jxCnB0XjzVgvtcY6aHEGmL5fgSPLFdFFWybATl1vhxfrtjn3iWxLx5llKBaGgHtzTazTRQunrxBsqnlgY5kMVyOrG5vx883NKspd9VwWTt" }}');">
     <div class="layout-content-container flex flex-col max-w-[960px] px-4 md:px-10 text-center gap-6 py-20">
-        <span class="inline-block px-3 py-1 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider mb-2 w-fit mx-auto">
-            #1 Rental Agency in Phu Quoc
-        </span>
+        @if($page && isset($page->hero_badge_text) && $page->hero_badge_text)
+            <span class="inline-block px-3 py-1 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider mb-2 w-fit mx-auto">
+                {{ $page->hero_badge_text }}
+            </span>
+        @else
+            <span class="inline-block px-3 py-1 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider mb-2 w-fit mx-auto">
+                #1 Rental Agency in Phu Quoc
+            </span>
+        @endif
         <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-[-0.033em]">
-            Monthly Apartment Rentals in Phu Quoc
+            {{ (isset($page->hero_title) && $page->hero_title) ? $page->hero_title : 'Monthly Apartment Rentals in Phu Quoc' }}
         </h1>
         <p class="text-gray-100 text-lg md:text-xl font-medium max-w-[720px] mx-auto leading-relaxed">
-            Flexible stays for digital nomads & tourists. Find your perfect short-term home, from budget studios to luxury sea-view condos, with no long-term contracts.
+            {{ (isset($page->hero_subtitle) && $page->hero_subtitle) ? $page->hero_subtitle : 'Flexible stays for digital nomads & tourists. Find your perfect short-term home, from budget studios to luxury sea-view condos, with no long-term contracts.' }}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center mt-4">
-            <button class="flex items-center justify-center rounded-xl h-12 px-8 bg-primary hover:bg-[#0fd6c5] text-[#111817] text-base font-bold transition-all transform hover:scale-105">
-                Browse Listings
-            </button>
-            <button class="flex items-center justify-center rounded-xl h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold transition-all">
-                Talk to an Agent
-            </button>
+            @if($page && isset($page->hero_cta_primary_text) && isset($page->hero_cta_primary_link) && $page->hero_cta_primary_text && $page->hero_cta_primary_link)
+                <a href="{{ $page->hero_cta_primary_link }}" class="flex items-center justify-center rounded-xl h-12 px-8 bg-primary hover:bg-[#0fd6c5] text-[#111817] text-base font-bold transition-all transform hover:scale-105">
+                    {{ $page->hero_cta_primary_text }}
+                </a>
+            @else
+                <a href="{{ route('apartments.index') }}" class="flex items-center justify-center rounded-xl h-12 px-8 bg-primary hover:bg-[#0fd6c5] text-[#111817] text-base font-bold transition-all transform hover:scale-105">
+                    Browse Listings
+                </a>
+            @endif
+            @if($page && isset($page->hero_cta_secondary_text) && isset($page->hero_cta_secondary_link) && $page->hero_cta_secondary_text && $page->hero_cta_secondary_link)
+                <a href="{{ $page->hero_cta_secondary_link }}" class="flex items-center justify-center rounded-xl h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold transition-all">
+                    {{ $page->hero_cta_secondary_text }}
+                </a>
+            @else
+                <a href="{{ route('contact') }}" class="flex items-center justify-center rounded-xl h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold transition-all">
+                    Talk to an Agent
+                </a>
+            @endif
         </div>
     </div>
 </section>
@@ -91,10 +113,10 @@
                 <h2 class="text-2xl md:text-3xl font-bold text-[#111817] dark:text-white">Featured Monthly Rentals</h2>
                 <p class="text-gray-500 dark:text-gray-400 mt-2">Curated apartments available for immediate move-in.</p>
             </div>
-            <button class="hidden md:flex items-center text-primary font-bold hover:underline gap-1">
+            <a href="{{ route('apartments.index') }}" class="hidden md:flex items-center text-primary font-bold hover:underline gap-1">
                 View all listings 
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </button>
+            </a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div class="group flex flex-col rounded-xl overflow-hidden bg-background-light dark:bg-background-dark border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-300">
@@ -164,9 +186,9 @@
                 </div>
             </div>
         </div>
-        <button class="md:hidden mt-8 w-full h-12 rounded-xl border border-gray-200 dark:border-gray-700 font-bold text-[#111817] dark:text-white text-center flex items-center justify-center">
+        <a href="{{ route('apartments.index') }}" class="md:hidden mt-8 w-full h-12 rounded-xl border border-gray-200 dark:border-gray-700 font-bold text-[#111817] dark:text-white text-center flex items-center justify-center">
             View All Listings
-        </button>
+        </a>
     </div>
 </section>
 
@@ -265,13 +287,13 @@
             <h2 class="text-3xl md:text-4xl font-black text-[#111817]">Ready to move to paradise?</h2>
             <p class="text-[#111817]/80 text-lg max-w-[600px] font-medium">Contact our local agent today to check availability for your dates. We respond within 1 hour during business hours.</p>
             <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                <button class="flex items-center justify-center gap-2 rounded-xl h-12 px-8 bg-[#111817] text-white text-base font-bold hover:bg-black transition-colors shadow-lg">
+                <a href="https://wa.me/84902607024" target="_blank" class="flex items-center justify-center gap-2 rounded-xl h-12 px-8 bg-[#111817] text-white text-base font-bold hover:bg-black transition-colors shadow-lg">
                     <span class="material-symbols-outlined">chat</span>
                     Chat on WhatsApp
-                </button>
-                <button class="flex items-center justify-center gap-2 rounded-xl h-12 px-8 bg-white text-[#111817] text-base font-bold hover:bg-gray-50 transition-colors shadow-lg">
+                </a>
+                <a href="{{ route('apartments.index') }}" class="flex items-center justify-center gap-2 rounded-xl h-12 px-8 bg-white text-[#111817] text-base font-bold hover:bg-gray-50 transition-colors shadow-lg">
                     Browse Apartments
-                </button>
+                </a>
             </div>
         </div>
     </div>

@@ -140,11 +140,11 @@ class PostResource extends Resource
                                     ->maxLength(255)
                                     ->helperText('Leave empty to use default URL')
                                     ->columnSpan(1),
-                                Forms\Components\Textarea::make('schema_markup')
-                                    ->label('Schema Markup (JSON-LD)')
-                                    ->rows(5)
-                                    ->helperText('JSON-LD structured data for Article schema (optional)')
-                                    ->columnSpanFull(),
+//                                Forms\Components\Textarea::make('schema_markup')
+//                                    ->label('Schema Markup (JSON-LD)')
+//                                    ->rows(5)
+//                                    ->helperText('JSON-LD structured data for Article schema (optional)')
+//                                    ->columnSpanFull(),
                                 Forms\Components\Toggle::make('noindex')
                                     ->label('No Index')
                                     ->helperText('Prevent search engines from indexing this post')
@@ -196,10 +196,8 @@ class PostResource extends Resource
                 Tables\Columns\TextColumn::make('index')
                     ->label('#')
                     ->getStateUsing(function ($record, $livewire) {
-                        // Get the table records collection
                         $records = $livewire->getTableRecords();
 
-                        // Find the index of current record in the collection
                         $index = $records->search(function ($item) use ($record) {
                             return $item->id === $record->id;
                         });
@@ -208,11 +206,9 @@ class PostResource extends Resource
                             return '';
                         }
 
-                        // Get pagination info
                         $currentPage = $records->currentPage() ?? 1;
                         $perPage = $records->perPage() ?? 10;
 
-                        // Calculate sequential number: (page - 1) * perPage + index + 1
                         return ($currentPage - 1) * $perPage + $index + 1;
                     })
                     ->sortable(false)

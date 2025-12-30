@@ -14,9 +14,6 @@
                 <span class="material-symbols-outlined text-sm mr-1">photo_camera</span> {{ $apartment->photos_count }}
             </div>
         @endif
-        <button class="absolute bottom-4 right-4 p-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-lg hover:scale-110 transform duration-200">
-            <span class="material-symbols-outlined text-xl">favorite</span>
-        </button>
     </div>
     <div class="p-6 flex-1 flex flex-col">
         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">

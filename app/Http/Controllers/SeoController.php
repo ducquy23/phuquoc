@@ -2,24 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\HeroFilterService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+
 class SeoController extends Controller
 {
-    public function longTerm()
+    public function __construct(
+        protected HeroFilterService $heroFilterService
+    ) {}
+
+    public function longTerm(): Factory|View
     {
-        // SEO page: long-term rentals (static content)
-        return view('seo.long-term-rentals');
+        $page = new \stdClass();
+
+        return view('seo.long-term-rentals', [
+            'page' => $page,
+        ]);
     }
 
-    public function monthly()
+    public function monthly(): Factory|View
     {
-        // SEO page: monthly rentals (static content)
-        return view('seo.monthly-rentals');
+        $page = new \stdClass();
+
+        return view('seo.monthly-rentals', [
+            'page' => $page,
+        ]);
     }
 
-    public function apartmentsForRent()
+    public function apartmentsForRent(): Factory|View
     {
-        // SEO page: generic Phu Quoc apartments for rent (static content)
-        return view('seo.phu-quoc-apartments-for-rent');
+        $page = new \stdClass();
+
+        return view('seo.phu-quoc-apartments-for-rent', [
+            'page' => $page,
+        ]);
     }
 }
 

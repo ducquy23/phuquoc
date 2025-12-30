@@ -14,6 +14,13 @@ class EditPost extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('view_public')
+                ->label('View Public Page')
+                ->icon('heroicon-o-globe-alt')
+                ->color('info')
+                ->url(fn () => route('blog.show', $this->record->slug))
+                ->openUrlInNewTab(),
+            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
         ];
     }

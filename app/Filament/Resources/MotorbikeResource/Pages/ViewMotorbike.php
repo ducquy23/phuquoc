@@ -4,10 +4,9 @@ namespace App\Filament\Resources\MotorbikeResource\Pages;
 
 use App\Filament\Resources\MotorbikeResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\Facades\Auth;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditMotorbike extends EditRecord
+class ViewMotorbike extends ViewRecord
 {
     protected static string $resource = MotorbikeResource::class;
 
@@ -20,15 +19,8 @@ class EditMotorbike extends EditRecord
                 ->color('info')
                 ->url(fn () => route('motorbikes.show', $this->record->slug))
                 ->openUrlInNewTab(),
-            Actions\ViewAction::make(),
+            Actions\EditAction::make(),
             Actions\DeleteAction::make(),
         ];
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['updated_by'] = Auth::id();
-        
-        return $data;
     }
 }

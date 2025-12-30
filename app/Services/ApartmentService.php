@@ -20,20 +20,8 @@ class ApartmentService
     public function getPublishedApartments(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
         $query = Apartment::query()
-            ->with(['heroFilterLocation', 'heroFilterPropertyType', 'heroFilterBed'])
+            ->with(['heroFilterPropertyType', 'heroFilterBed'])
             ->where('is_published', true);
-
-        // Filter by hero filter location
-        if (!empty($filters['location']) && $filters['location'] !== 'all') {
-            // Try to find location by name first
-            $location = \App\Models\HeroFilterLocation::where('name', $filters['location'])->first();
-            if ($location) {
-                $query->where('hero_filter_location_id', $location->id);
-            } else {
-                // Fallback to district if not found in hero filter locations
-                $query->where('district', 'like', '%' . $filters['location'] . '%');
-            }
-        }
 
         // Filter by hero filter property type
         if (!empty($filters['property_type']) && $filters['property_type'] !== 'all') {
@@ -131,7 +119,8 @@ class ApartmentService
     {
         $query = Apartment::where('is_published', true)
             ->where('id', '!=', $apartment->id)
-            ->where('status', 'available');
+            ->where('status', 'available')
+            ->with('ward');
 
         // Try to match by property type first
         if ($apartment->hero_filter_property_type_id) {
@@ -149,6 +138,7 @@ class ApartmentService
                 ->where('id', '!=', $apartment->id)
                 ->whereNotIn('id', $similar->pluck('id'))
                 ->where('status', 'available')
+                ->with('ward')
                 ->orderBy('published_at', 'desc')
                 ->limit($limit - $similar->count())
                 ->get();
@@ -169,10 +159,21 @@ class ApartmentService
     {
         $apartments = $this->getPublishedApartments($filters);
 
+        // Get price range for filter
+        $priceRange = Apartment::where('is_published', true)
+            ->where('status', 'available')
+            ->whereNotNull('price_monthly')
+            ->selectRaw('MIN(price_monthly) as min_price, MAX(price_monthly) as max_price')
+            ->first();
+
         return [
             'apartments' => $apartments,
             'filters' => $filters,
             'totalCount' => $apartments->total(),
+            'priceRange' => [
+                'min' => $priceRange->min_price ?? 0,
+                'max' => $priceRange->max_price ?? 2000,
+            ],
         ];
     }
 

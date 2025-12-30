@@ -5,6 +5,17 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Discover Latest
                     Apartments</h2>
                 <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Newest Apartments in Phu Quoc</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <a href="{{ route('seo.long-term-rentals') }}" class="text-xs px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-primary rounded-full hover:bg-primary hover:text-white transition-colors">
+                        Long-Term Rentals
+                    </a>
+                    <a href="{{ route('seo.monthly-rentals') }}" class="text-xs px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-primary rounded-full hover:bg-primary hover:text-white transition-colors">
+                        Monthly Rentals
+                    </a>
+                    <a href="{{ route('seo.phu-quoc-apartments-for-rent') }}" class="text-xs px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-primary rounded-full hover:bg-primary hover:text-white transition-colors">
+                        Complete Guide
+                    </a>
+                </div>
             </div>
             <a class="inline-flex items-center text-primary font-bold hover:text-secondary transition-colors group"
                href="{{ route('apartments.index') }}">
@@ -42,11 +53,6 @@
                                         class="material-symbols-outlined text-sm mr-1">photo_camera</span> {{ $totalImages }}
                                 </div>
                             @endif
-                            <button
-                                class="absolute bottom-4 right-4 p-2.5 bg-white dark:bg-gray-800 rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-lg hover:scale-110 transform duration-200"
-                                onclick="event.preventDefault();">
-                                <span class="material-symbols-outlined text-xl">favorite</span>
-                            </button>
                         </div>
                         <div class="p-6 flex-1 flex flex-col">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight group-hover:text-primary transition-colors">{{ $apartment->title }}</h3>

@@ -22,6 +22,11 @@ class HeroFilterSettings extends Page implements HasForms
     protected static ?string $navigationGroup = 'Site Settings';
     protected static ?int $navigationSort = 12;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public ?array $data = [];
 
     public function mount(): void

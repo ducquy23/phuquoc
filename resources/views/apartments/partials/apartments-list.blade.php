@@ -11,9 +11,6 @@
             @elseif($apartment->status === 'available')
             <span class="absolute top-4 left-4 z-10 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-md shadow-md uppercase tracking-wider">Available</span>
             @endif
-            <button class="absolute top-4 right-4 z-10 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-white transition-colors">
-                <span class="material-icons-round text-xl">favorite_border</span>
-            </button>
             <img alt="{{ $apartment->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" src="{{ $apartment->featured_image_url }}"/>
             @if(($view ?? 'grid') !== 'list')
             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent h-20"></div>
